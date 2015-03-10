@@ -254,20 +254,20 @@ function Maze(width, height) {
         };
 
 
-        this.isValid = function(canvas,step,direction,val_right,val_up){
-            if (direction == "up" && cells[val_right][val_up].walls.n){
+        this.isValid = function(canvas, step, direction, cell_x, cell_y){
+            if (direction == "up" && cells[cell_x][cell_y].walls.n){
                 //window.alert("can't move up");
                 return false;
             }
-            else if (direction == "down" && cells[val_right][val_up].walls.s){
+            else if (direction == "down" && cells[cell_x][cell_y].walls.s){
                 //window.alert("can't move down");
                 return false;
             }
-            else if (direction == "right" && cells[val_right][val_up].walls.e){
+            else if (direction == "right" && cells[cell_x][cell_y].walls.e){
                 //window.alert("can't move right");
                 return false;
             }
-            else if (direction == "left" && cells[val_right][val_up].walls.w){
+            else if (direction == "left" && cells[cell_x][cell_y].walls.w){
                 //window.alert("can't move left");
                 return false;
             }
@@ -278,7 +278,7 @@ function Maze(width, height) {
         }
 
 
-        this.drawCircle = function (canvas, step, val_right,val_up){
+        this.drawCircle = function (canvas, step, val_right,val_up, player){
             
             if (typeof canvas == "string") {
              canvas = document.getElementById(canvas);
@@ -291,13 +291,18 @@ function Maze(width, height) {
                 window.alert("problem");
                 return;
             }
+            if (player == 1){
+                context.fillStyle = 'green';
+            }
+            else if (player == 2){
+                context.fillStyle = 'blue';
+            }
             
-            context.fillStyle = 'green';
             context.fillRect(5+val_right*step, 5+val_up*step, step - 5, step - 5);
             /*
             context.beginPath();
             
-            context.arc(1+val_right*step+step/3,1+val_up*step+step/3,step/3,0,2*Math.PI);    
+            context.arc(1+val_right_one*step+step/3,1+val_up_one*step+step/3,step/3,0,2*Math.PI);    
             //context.arc(1+val*step+step/3,1+step/2,step/3,0,2*Math.PI);
             context.closePath();
             context.fill();
@@ -306,7 +311,7 @@ function Maze(width, height) {
         };
 
 
-        this.removeCircle = function (canvas, step, val_right, val_up){
+        this.removeCircle = function (canvas, step, val_right, val_up){             // removing the previous mark
             if (typeof canvas == "string") {
              canvas = document.getElementById(canvas);
             }
@@ -324,7 +329,7 @@ function Maze(width, height) {
 
             /*
             context.beginPath();
-            context.arc(1+val_right*step+step/3,1+val_up*step+step/3,step/3,0,2*Math.PI);    
+            context.arc(1+val_right_one*step+step/3,1+val_up_one*step+step/3,step/3,0,2*Math.PI);    
             context.closePath();
             
             context.fill();
