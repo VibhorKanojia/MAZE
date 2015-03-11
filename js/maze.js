@@ -163,7 +163,7 @@ function Maze(width, height) {
         }
         step = step || 10;
         colors = colors || {};
-        colors.wall = "#000000";
+        colors.wall = "#09C";
         colors.background = "#FFFFFF";
         colors.start = colors.start || "#33FF66";
         colors.end = colors.end || "#FF6633";

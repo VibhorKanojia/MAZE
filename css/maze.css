@@ -3,14 +3,19 @@
 #mazeHolder {
     position : relative;
     width : 100%;
+    float:center;
 }
 
 #mazeHolder > canvas {
     position : relative;
+    float :center;
 }
 
 #controls {
-    width : 401px;
+    width : 200px;
+    height : 601px;
+    float:right;
+    background-color: #09C;
 }
 
 #controls input.number {
@@ -20,9 +25,9 @@
 .uibox {
     display : float;
     border : 1px solid #F63;
-    background-color : #FB8;
+    background-color : #09C;
 }
 
 .controlButton {
-    float : right;
+    float : center;
 }

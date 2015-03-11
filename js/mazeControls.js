@@ -33,13 +33,13 @@ window.onload = function () {
         drawButton = document.getElementById("draw"),
         solveButton = document.getElementById("solve");
 
-    drawButton.onclick = function () {
-        drawMaze(widthInput.value, heightInput.value);
-    };
+   // drawButton.onclick = function () {
+     //   drawMaze(widthInput.value, heightInput.value);
+    //};
 
-    solveButton.onclick = function () {
-        maze.drawSolution(canvas);
-    };
+    //solveButton.onclick = function () {
+     //   maze.drawSolution(canvas);
+    //};
 
     document.onkeydown = checkKey;
 
