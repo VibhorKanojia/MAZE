@@ -4,10 +4,19 @@ var val_right_one = 0;
 var val_up_one = 0;
 var val_right_two = 0;
 var val_up_two = 0;
-window.onload = function () {
-    var canvas = document.createElement("canvas"),
+var canvas = document.createElement("canvas"),
         context = canvas.getContext('2d'),
         gradient = context.createLinearGradient(0, 0, 601, 601);
+
+
+function solveMaze() {
+        maze.drawSolution(canvas);
+    };
+    
+window.onload = function () {
+   // var canvas = document.createElement("canvas"),
+    //    context = canvas.getContext('2d'),
+     //   gradient = context.createLinearGradient(0, 0, 601, 601);
 
     canvas.setAttribute("width", "801");
     canvas.setAttribute("height", "801");
@@ -36,12 +45,10 @@ window.onload = function () {
    // drawButton.onclick = function () {
      //   drawMaze(widthInput.value, heightInput.value);
     //};
-
-    //solveButton.onclick = function () {
+    //solveButton.onkeydown = function (){
      //   maze.drawSolution(canvas);
-    //};
-
-    document.onkeydown = checkKey;
+    //}
+        document.onkeydown = checkKey;
 
     function checkKey(e) {
         

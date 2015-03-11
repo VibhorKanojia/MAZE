@@ -247,9 +247,9 @@ function Maze(width, height) {
          context.fillRect(5, 5, step - 5, step - 5);
            
         //context.fillRect(1, 1, step - 1, step - 1);
-        context.fillStyle = colors.end;
-        context.fillRect((width - 1) * step + 1, (height - 1) * step + 1,
-                         step - 1, step - 1);
+        context.fillStyle = '#003243';
+        context.fillRect((width - 1) * step + 5, (height - 1) * step + 5,
+                         step , step );
 
         
 
@@ -260,7 +260,7 @@ function Maze(width, height) {
             if (typeof canvas == "string") {
                 canvas = document.getElementById(canvas);
             }
-            color = color || "#DDDD66";
+            color = "#ccf2ff";
 
             try {
 	        var context = canvas.getContext('2d');
@@ -279,8 +279,8 @@ function Maze(width, height) {
             
             for (var i = 0; i < solution.length; i++) {
                 var position = actualPosition(solution[i]);
-                context.fillRect(position[0] + 1, position[1] + 1, step - 1,
-                                 step - 1);
+                context.fillRect(position[0] + 5, position[1] + 5, step - 5,
+                                 step - 5);
             }
         };
 
