@@ -153,7 +153,32 @@ function Maze(width, height) {
      * can be gradients or patterns as well.
      */
 
-
+     this.roundRect = function (ctx, x, y, width, height, radius, fill, stroke) {
+        if (typeof stroke == "undefined" ) {
+            stroke = false;
+        }
+        if (typeof radius === "undefined") {
+            radius = 5;
+        }
+        ctx.fillStyle="#09C";
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.lineTo(x + width - radius, y);
+        ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+        ctx.lineTo(x + width, y + height - radius);
+        ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+        ctx.lineTo(x + radius, y + height);
+        ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+        ctx.lineTo(x, y + radius);
+        ctx.quadraticCurveTo(x, y, x + radius, y);
+        ctx.closePath();
+        if (stroke) {
+            ctx.stroke();
+        }
+        if (fill) {
+            ctx.fill();
+        }        
+    };
 
      
 
@@ -198,21 +223,27 @@ function Maze(width, height) {
 
                 if (cell.walls.n) {
                     context.fillRect(actualX, actualY, step, 5);
+                    //this.roundRect(context, actualX,actualY,5,step,true,false);
+
                 }
                 if (cell.walls.e) {
                     context.fillRect(actualX + step, actualY, 5, step);
+                    //this.roundRect(context, actualX+step, actualY, step, 5,true,false);
                 }
                 if (cell.walls.s) {
                     context.fillRect(actualX, actualY + step, step, 5);
+                  //  this.roundRect(context, actualX, actualY + step, 5, step,true,false);
                 }
                 if (cell.walls.w) {
                     context.fillRect(actualX, actualY, 5, step);
+                   // this.roundRect(context, actualX, actualY, step, 5, true, false);
+
                 }
             }
         }
 
         // Fill in a start and end block:
-         context.fillStyle = 'green';
+         context.fillStyle = '#006080';
          context.fillRect(5, 5, step - 5, step - 5);
            
         //context.fillRect(1, 1, step - 1, step - 1);
@@ -292,12 +323,13 @@ function Maze(width, height) {
                 return;
             }
             if (player == 1){
-                context.fillStyle = 'green';
+                context.fillStyle = '#006080';
             }
             else if (player == 2){
                 context.fillStyle = 'blue';
             }
             
+            //this.roundRect(context, 5+val_right*step, 5+val_up*step, step - 5, step - 5,true,false);
             context.fillRect(5+val_right*step, 5+val_up*step, step - 5, step - 5);
             /*
             context.beginPath();
