@@ -1,7 +1,3 @@
-/* Represents a maze. The maze is a path through a grid, with some of the grid's
- * walls missing. The dimensions of the grid (the width and height) are in terms
- * of these cells.
- */
 function Maze(width, height) {
     var cells = [],
         visited = 0, // The number of cells already visited.
@@ -49,9 +45,7 @@ function Maze(width, height) {
     
     /* Visits each unvisited cell, starting with the given one, randomly
      * traveling to adjacent cells and knocking out the walls between them to
-     * create the maze. The optional direction argument is the direction the
-     * visit _came from_. That is, if you visit cell (1, 2) from cell (0, 2),
-     * the direction would be "e" (east).
+     * create the maze.
      */
     function visit(cell, direction) {
         cell.visited = true;
@@ -87,7 +81,9 @@ function Maze(width, height) {
 
     var startX = Math.floor(Math.random() * width),
         startY = Math.floor(Math.random() * height);
-    visit(cells[startX][startY]);
+    visit(cells[startX][startY]); // starting cell
+
+
 
     /* Returns an array of cells that are a path from the cell specified in the
      * first two coordinates to the cell specified in the last two coordinates.
@@ -309,12 +305,13 @@ function Maze(width, height) {
         }
 
 
-        this.drawCircle = function (canvas, step, val_right,val_up, player){
+        this.drawCircle = function (canvas, step, val_right,val_up, player,width){
             
+
             if (typeof canvas == "string") {
              canvas = document.getElementById(canvas);
             }
-            step = step || 10;
+        
             
             try {
                 var context = canvas.getContext('2d');
@@ -331,6 +328,16 @@ function Maze(width, height) {
             
             //this.roundRect(context, 5+val_right*step, 5+val_up*step, step - 5, step - 5,true,false);
             context.fillRect(5+val_right*step, 5+val_up*step, step - 5, step - 5);
+
+            if (val_right == width -1 && val_up == width -1){
+                if (player == 1){
+                    window.alert("Player 1 Won");
+                }
+
+                else if (player == 2){
+                    window.alert("Player 2 Won");
+                }   
+            }
             /*
             context.beginPath();
             
