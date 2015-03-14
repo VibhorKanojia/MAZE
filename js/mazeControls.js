@@ -56,7 +56,29 @@ window.onload = function () {
     canvas.setAttribute("width", "801");
     canvas.setAttribute("height", "801");
 
-    document.getElementById("mazeHolder").insertAdjacentElement("afterBegin", canvas);
+    var mazeholder = document.getElementById("mazeHolder");
+    
+    if (mazeholder.insertAdjacentElement) {       
+         mazeholder.insertAdjacentElement ("afterBegin", canvas);
+    }
+    
+    else {
+        switch ("afterBegin") {
+            case "beforeBegin":
+                mazeholder.parentNode.insertBefore (canvas, mazeholder);
+                break;
+            case "afterBegin":
+                mazeholder.insertBefore (canvas, mazeholder.firstChild);
+                 break;
+            case "beforeEnd":
+                mazeholder.appendChild (canvas);
+                break;
+            case "afterEnd":
+                mazeholder.parentNode.insertBefore (canvas, mazeholder.nextSibling);
+                break;
+            }
+        }
+
     
     drawMaze();
     document.onkeydown = checkKey;
