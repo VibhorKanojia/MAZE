@@ -117,8 +117,8 @@ io.on('connection', function(socket){
 
 
 
-  socket.on('blockmove', function(msg){
-    console.log('message: ' + msg);
+  socket.on('key code to server', function(msg){
+    io.emit('move blocks', msg);
   });
   //socket.emit('servermsg',"HEldl");
 });

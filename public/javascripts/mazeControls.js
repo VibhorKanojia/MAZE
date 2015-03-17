@@ -44,11 +44,11 @@ function drawMaze() {
     context.fillStyle = "#FFFFFF";
     context.fillRect(0, 0, canvas_width, canvas_height);
     maze = new Maze(width, height); 
-   // window.alert(clientID);
+
     if (clientID == 0){
-       // window.alert("hello");
+   
         clobject.cells = maze.draw(canvas, step);
-        //window.alert(clobject.cells.length);
+   
         socket.emit('current matrix', clobject);
     }
     else {
@@ -90,10 +90,7 @@ function changeDifficulty() {
     
 window.onload = function () {
     
-   // var canvas = document.createElement("canvas"),
-    //    context = canvas.getContext('2d'),
-     //   gradient = context.createLinearGradient(0, 0, 601, 601,width);
-    
+ 
     canvas.setAttribute("width", "801");
     canvas.setAttribute("height", "801");
 
@@ -124,25 +121,22 @@ window.onload = function () {
     socket = io();
 
     socket.on('Client ID message', function(data){
-        //window.alert("hello");
+    
         clientID = data.clientID;
         socketID = data.socketID;
         drawMaze();
     });
-    
-    
-    document.onkeydown = checkKey;
-
-    function checkKey(e) {
 
 
-        socket.emit('blockmove',  "Vibhor Kanojia");
-        
-        e = e || window.event;
-        var step = (canvas_width-1)/width;
-    
-    if (!(dw1 == 1)){
-        if (e.keyCode == '38') {
+    socket.on ('move blocks', function(msg){
+        moveBlocks(msg);
+    });
+
+
+function moveBlocks(val){
+
+if (!(dw1 == 1)){
+        if (val == '38') {
            if (maze.isValid(canvas,step,"up",val_right_one,val_up_one)){
                 maze.removeCircle(canvas,step,val_right_one,val_up_one);
                 val_up_one -=1;
@@ -152,7 +146,7 @@ window.onload = function () {
 
             }
         }
-        else if (e.keyCode == '40') {
+        else if (val == '40') {
             //window.alert("down");
             if (maze.isValid(canvas,step,"down",val_right_one,val_up_one)){
                 maze.removeCircle(canvas,step,val_right_one,val_up_one);
@@ -162,7 +156,7 @@ window.onload = function () {
 
             }
         }
-        else if (e.keyCode == '37') {
+        else if (val == '37') {
             //window.alert("left");
             if (maze.isValid(canvas,step,"left",val_right_one,val_up_one)){
                 maze.removeCircle(canvas,step,val_right_one,val_up_one);
@@ -172,7 +166,7 @@ window.onload = function () {
 
             }
         }
-        else if (e.keyCode == '39') {
+        else if (val == '39') {
             //window.alert("right");
             if (maze.isValid(canvas,step,"right",val_right_one,val_up_one)){
                 maze.removeCircle(canvas,step,val_right_one,val_up_one);
@@ -184,23 +178,23 @@ window.onload = function () {
         }
     }
     else{     //destroy wall
-        if (e.keyCode == '38'){
+        if (val == '38'){
             maze.destroyWall(canvas,step,val_right_one,val_up_one,1,width,"up");
         }
-        else if (e.keyCode == '40'){
+        else if (val == '40'){
             maze.destroyWall(canvas,step,val_right_one,val_up_one,1,width,"down");
         }
-        else if (e.keyCode =='37'){
+        else if (val =='37'){
             maze.destroyWall(canvas,step,val_right_one,val_up_one,1,width,"left");
         }
-        else if (e.keyCode == '39'){
+        else if (val == '39'){
             maze.destroyWall(canvas,step,val_right_one,val_up_one,1,width,"right");
         }
         dw1 = 2;
     }
 
     if (!(dw2==1)){
-        if (e.keyCode == '87') {               //W
+        if (val == '87' ) {               //W
             //window.alert("right");
             if (maze.isValid(canvas,step,"up",val_right_two,val_up_two)){
                 maze.removeCircle(canvas,step,val_right_two,val_up_two);
@@ -211,7 +205,7 @@ window.onload = function () {
             }
         }
 
-        else if (e.keyCode == '83') {               //S
+        else if (val == '83') {               //S
             //window.alert("down");
             if (maze.isValid(canvas,step,"down",val_right_two,val_up_two)){
                 maze.removeCircle(canvas,step,val_right_two,val_up_two);
@@ -221,7 +215,7 @@ window.onload = function () {
             }
         }
 
-        else if (e.keyCode == '65') {    //A
+        else if (val == '65') {    //A
             //window.alert("left");
             if (maze.isValid(canvas,step,"left",val_right_two,val_up_two)){
                 maze.removeCircle(canvas,step,val_right_two,val_up_two);
@@ -232,7 +226,7 @@ window.onload = function () {
         }
 
 
-        else if (e.keyCode == '68') {               //D
+        else if (val == '68') {               //D
             //window.alert("right");
             if (maze.isValid(canvas,step,"right",val_right_two,val_up_two)){
                 maze.removeCircle(canvas,step,val_right_two,val_up_two);
@@ -243,30 +237,53 @@ window.onload = function () {
         }
     }
     else {
-        if (e.keyCode == '87'){
+        if (val == '87'){
             maze.destroyWall(canvas,step,val_right_two,val_up_two,2,width,"up");
         }
-        else if (e.keyCode == '83'){
+        else if (val == '83'){
             maze.destroyWall(canvas,step,val_right_two,val_up_two,2,width,"down");
         }
-        else if (e.keyCode =='65'){
+        else if (val =='65'){
             maze.destroyWall(canvas,step,val_right_two,val_up_two,2,width,"left");
         }
-        else if (e.keyCode == '68'){
+        else if (val == '68'){
             maze.destroyWall(canvas,step,val_right_two,val_up_two,2,width,"right");
         }
         dw2 = 2;
     }
 
-    if (e.keyCode == '191'){
+    if (val == '191'){
         dw1++;
         
     }
 
-    else if (e.keyCode == '70'){
+    else if (val == '70'){
         dw2++;
     }
 
+};
 
+
+
+    
+    
+    document.onkeydown = checkKey;
+
+    function checkKey(e) {
+
+        
+        e = e || window.event;
+        socket.emit('key code to server', e.keyCode);
     };
 };
+
+
+
+
+
+
+
+
+
+
+
