@@ -89,15 +89,38 @@ app.get('/', function (req, res) {
       res.sendFile(__dirname + '/public/Maze.html');
 });
 
+var cells = [];
+
+var myobject={'cells':[]};
 
 io.on('connection', function(socket){
   clients[clients.length] = socket.id;
+  var curID = clients.length -1;
   console.log(socket.id);
-  socket.on('chat message', function(msg){
+  io.to(clients[clients.length-1]).emit('Client ID message', {clientID : curID , socketID  : socket.id});
+  if (clients.length > 0){
+      io.to(clients[1]).emit('Use matrix', myobject);
+    }
+  socket.on('div message', function(msg){
     //io.toemit('chat message', msg);
-    io.to(clients[1]).emit('chat message', msg);
+    console.log("message received")
+    io.to(clients[1]).emit('server message', msg);
     console.log('message: ' + msg);
   });
+
+  socket.on('current matrix', function(data){
+    myobject.cells = data.cells.slice();
+    console.log(myobject.cells.length);
+  });
+
+
+
+
+
+  socket.on('blockmove', function(msg){
+    console.log('message: ' + msg);
+  });
+  //socket.emit('servermsg',"HEldl");
 });
   
 http.listen(3000, function(){

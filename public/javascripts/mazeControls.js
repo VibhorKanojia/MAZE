@@ -1,5 +1,16 @@
 /* This script lets the user control various aspects of the maze being drawn. */
 
+var clientID;
+var socketID;
+var socket;
+  
+
+function getDATA(){
+    window.alert(clientID + " " + socketID);
+}
+
+var clobject = {'cells':[]};
+
 var difficulty = 1;
 var canvas_width = 601;
 var canvas_height = 601;
@@ -33,8 +44,25 @@ function drawMaze() {
     context.fillStyle = "#FFFFFF";
     context.fillRect(0, 0, canvas_width, canvas_height);
     maze = new Maze(width, height); 
-    maze.draw(canvas, step);
+   // window.alert(clientID);
+    if (clientID == 0){
+       // window.alert("hello");
+        clobject.cells = maze.draw(canvas, step);
+        //window.alert(clobject.cells.length);
+        socket.emit('current matrix', clobject);
     }
+    else {
+        window.alert(clientID);
+        socket.on('Use matrix', function (data){
+            maze.draw(canvas,step,data);    
+        });
+        
+    }
+
+};
+
+
+
 
 function solveMaze() {
         maze.drawSolution(canvas);
@@ -61,13 +89,15 @@ function changeDifficulty() {
     };
     
 window.onload = function () {
+    
    // var canvas = document.createElement("canvas"),
     //    context = canvas.getContext('2d'),
      //   gradient = context.createLinearGradient(0, 0, 601, 601,width);
-
+    
     canvas.setAttribute("width", "801");
     canvas.setAttribute("height", "801");
 
+    
     var mazeholder = document.getElementById("mazeHolder");
     
     if (mazeholder.insertAdjacentElement) {       
@@ -91,11 +121,22 @@ window.onload = function () {
             }
         }
 
+    socket = io();
+
+    socket.on('Client ID message', function(data){
+        //window.alert("hello");
+        clientID = data.clientID;
+        socketID = data.socketID;
+        drawMaze();
+    });
     
-    drawMaze();
+    
     document.onkeydown = checkKey;
 
     function checkKey(e) {
+
+
+        socket.emit('blockmove',  "Vibhor Kanojia");
         
         e = e || window.event;
         var step = (canvas_width-1)/width;

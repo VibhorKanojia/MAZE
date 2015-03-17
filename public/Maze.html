@@ -24,8 +24,8 @@ Maze Game
 		<div class="hi-icon hi-icon-refresh" onclick='location.reload()'>Reload</div>
 		<div class="hi-icon hi-icon-screen" onclick='solveMaze()'>Solution</div>
 		<div class="hi-icon hi-icon-star" onclick ='changeDifficulty()'>Partners</div>
+		<div class="hi-icon hi-icon-support" onclick="getDATA()" >Connect</div>
 		<!--
-		<div class="hi-icon hi-icon-support">Support</div>
 		<div class="hi-icon hi-icon-locked">Security</div>
 	-->
 	</div>	
@@ -34,18 +34,5 @@ Maze Game
 
 <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
 <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
-<script>
-  var socket = io();
-  $('form').submit(function(){
-    socket.emit('chat message', $('#n').innerHTML);
-    $('#m').val('');
-    return false;
-  });
-
-  socket.on('chat message', function(msg){
-    document.getElementById("n").innerHTML = msg;
-  });
-</script>
-
 </body>
 </html>

@@ -1,3 +1,5 @@
+
+
 function Maze(width, height) {
     var cells = [],
         visited = 0, // The number of cells already visited.
@@ -149,40 +151,18 @@ function Maze(width, height) {
      * can be gradients or patterns as well.
      */
 
-     this.roundRect = function (ctx, x, y, width, height, radius, fill, stroke) {
-        if (typeof stroke == "undefined" ) {
-            stroke = false;
-        }
-        if (typeof radius === "undefined") {
-            radius = 5;
-        }
-        ctx.fillStyle="#09C";
-        ctx.beginPath();
-        ctx.moveTo(x + radius, y);
-        ctx.lineTo(x + width - radius, y);
-        ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-        ctx.lineTo(x + width, y + height - radius);
-        ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-        ctx.lineTo(x + radius, y + height);
-        ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-        ctx.lineTo(x, y + radius);
-        ctx.quadraticCurveTo(x, y, x + radius, y);
-        ctx.closePath();
-        if (stroke) {
-            ctx.stroke();
-        }
-        if (fill) {
-            ctx.fill();
-        }        
-    };
 
-     
-
-    this.draw = function (canvas, step, colors) {
+    this.draw = function (canvas, step, ref_obj) {
         if (typeof canvas == "string") {
             canvas = document.getElementById(canvas);
         }
-        colors = colors || {};
+
+        //window.alert((ref_obj.cells).length);
+        if (ref_obj){
+            window.alert((ref_obj.cells).length);
+            cells = (ref_obj.cells).slice();
+        } 
+        colors = {};
         colors.wall = "#09C";
         colors.background = "#FFFFFF";
         colors.start = colors.start || "#33FF66";
@@ -417,5 +397,6 @@ function Maze(width, height) {
             */
         };
 
+        return cells;
     };
 }
