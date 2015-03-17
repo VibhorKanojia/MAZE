@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head id="head">
+
+<title>
+Maze Game
+</title>
+<link rel="shortcut icon" href="../favicon.ico"> 
+<link rel="stylesheet" type="text/css" href="stylesheets/maze.css" />
+<link rel="stylesheet" type="text/css" href="stylesheets/default.css" />
+<link rel="stylesheet" type="text/css" href="stylesheets/component.css" />
+<script src="js/modernizr.custom.js"></script>
+<script language="javascript" src="javascripts/maze.js"></script>
+<script language="javascript" src="javascripts/mazeControls.js"></script>
+
+</head>
+
+<body id="body" style="overflow:hidden;">
+<div class="Parent">
+<div id="mazeHolder"></div>
+<div id="controls">
+	<div class="hi-icon-wrap hi-icon-effect-1 hi-icon-effect-1a">
+		<div class="hi-icon hi-icon-refresh" onclick='location.reload()'>Reload</div>
+		<div class="hi-icon hi-icon-screen" onclick='solveMaze()'>Solution</div>
+		<div class="hi-icon hi-icon-star" onclick ='changeDifficulty()'>Partners</div>
+		<!--
+		<div class="hi-icon hi-icon-support">Support</div>
+		<div class="hi-icon hi-icon-locked">Security</div>
+	-->
+	</div>	
+</div>
+</div>	
+
+<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+<script>
+  var socket = io();
+  $('form').submit(function(){
+    socket.emit('chat message', $('#n').innerHTML);
+    $('#m').val('');
+    return false;
+  });
+
+  socket.on('chat message', function(msg){
+    document.getElementById("n").innerHTML = msg;
+  });
+</script>
+
+</body>
+</html>
