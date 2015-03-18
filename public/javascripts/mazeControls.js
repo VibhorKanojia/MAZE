@@ -135,120 +135,126 @@ window.onload = function () {
 
 function moveBlocks(val){
 
-if (!(dw1 == 1)){
-        if (val == '38') {
-           if (maze.isValid(canvas,step,"up",val_right_one,val_up_one)){
-                maze.removeCircle(canvas,step,val_right_one,val_up_one);
-                val_up_one -=1;
-                maze.drawCircle(canvas, step,val_right_one,val_up_one,1,width);
-                maze.drawCircle(canvas, step,val_right_two,val_up_two,2,width);
+    if (!(dw1 == 1)){
 
+        switch(val){
 
-            }
+            case 38:            
+                if (maze.isValid(canvas,step,"up",val_right_one,val_up_one)){
+                    maze.removeCircle(canvas,step,val_right_one,val_up_one);
+                    val_up_one -=1;        
+                }
+                break;
+
+            case 40:           
+                if (maze.isValid(canvas,step,"down",val_right_one,val_up_one)){
+                    maze.removeCircle(canvas,step,val_right_one,val_up_one);
+                    val_up_one +=1;
+                }
+                break;
+
+            case 37:    
+                if (maze.isValid(canvas,step,"left",val_right_one,val_up_one)){
+                    maze.removeCircle(canvas,step,val_right_one,val_up_one);
+                    val_right_one -=1;
+                }
+                break;
+
+            case 39:
+                if (maze.isValid(canvas,step,"right",val_right_one,val_up_one)){
+                    maze.removeCircle(canvas,step,val_right_one,val_up_one);
+                    val_right_one +=1;
+                }
+                break;
         }
-        else if (val == '40') {
-            //window.alert("down");
-            if (maze.isValid(canvas,step,"down",val_right_one,val_up_one)){
-                maze.removeCircle(canvas,step,val_right_one,val_up_one);
-                val_up_one +=1;
-                maze.drawCircle(canvas, step,val_right_one,val_up_one,1,width);
-                maze.drawCircle(canvas, step,val_right_two,val_up_two,2,width);
 
-            }
-        }
-        else if (val == '37') {
-            //window.alert("left");
-            if (maze.isValid(canvas,step,"left",val_right_one,val_up_one)){
-                maze.removeCircle(canvas,step,val_right_one,val_up_one);
-                val_right_one -=1;
-                maze.drawCircle(canvas, step,val_right_one,val_up_one,1,width);
-                maze.drawCircle(canvas, step,val_right_two,val_up_two,2,width);
-
-            }
-        }
-        else if (val == '39') {
-            //window.alert("right");
-            if (maze.isValid(canvas,step,"right",val_right_one,val_up_one)){
-                maze.removeCircle(canvas,step,val_right_one,val_up_one);
-                val_right_one +=1;
-                maze.drawCircle(canvas, step,val_right_one,val_up_one,1,width);
-                maze.drawCircle(canvas, step,val_right_two,val_up_two,2,width);
-
-            }
-        }
+        maze.drawCircle(canvas, step,val_right_one,val_up_one,1,width);
+        maze.drawCircle(canvas, step,val_right_two,val_up_two,2,width);
+        
     }
-    else{     //destroy wall
-        if (val == '38'){
-            maze.destroyWall(canvas,step,val_right_one,val_up_one,1,width,"up");
+
+
+    else{     
+
+        switch(val){
+
+            case 38:
+                maze.destroyWall(canvas,step,val_right_one,val_up_one,1,width,"up");
+                break;
+
+            case 40:
+                maze.destroyWall(canvas,step,val_right_one,val_up_one,1,width,"down");
+                break;
+
+            case 37:
+                maze.destroyWall(canvas,step,val_right_one,val_up_one,1,width,"left");
+                break;
+
+            case 39:
+                maze.destroyWall(canvas,step,val_right_one,val_up_one,1,width,"right");
+                break;                
         }
-        else if (val == '40'){
-            maze.destroyWall(canvas,step,val_right_one,val_up_one,1,width,"down");
-        }
-        else if (val =='37'){
-            maze.destroyWall(canvas,step,val_right_one,val_up_one,1,width,"left");
-        }
-        else if (val == '39'){
-            maze.destroyWall(canvas,step,val_right_one,val_up_one,1,width,"right");
-        }
+
         dw1 = 2;
     }
 
     if (!(dw2==1)){
-        if (val == '87' ) {               //W
-            //window.alert("right");
-            if (maze.isValid(canvas,step,"up",val_right_two,val_up_two)){
-                maze.removeCircle(canvas,step,val_right_two,val_up_two);
-                val_up_two -=1;
-                maze.drawCircle(canvas, step,val_right_two,val_up_two,2,width);
-                maze.drawCircle(canvas, step,val_right_one,val_up_one,1,width);
 
-            }
+        switch(val){
+
+            case 87:
+                if (maze.isValid(canvas,step,"up",val_right_two,val_up_two)){
+                    maze.removeCircle(canvas,step,val_right_two,val_up_two);
+                    val_up_two -=1;
+                }    
+                break;
+
+            case 83:
+                if (maze.isValid(canvas,step,"down",val_right_two,val_up_two)){
+                    maze.removeCircle(canvas,step,val_right_two,val_up_two);
+                    val_up_two +=1;
+                }
+                break;
+
+            case 65:
+                if (maze.isValid(canvas,step,"left",val_right_two,val_up_two)){
+                    maze.removeCircle(canvas,step,val_right_two,val_up_two);
+                    val_right_two -=1;
+                }
+                break;
+
+            case 68:
+                if (maze.isValid(canvas,step,"right",val_right_two,val_up_two)){
+                    maze.removeCircle(canvas,step,val_right_two,val_up_two);
+                    val_right_two +=1;
+                }  
+                break;  
         }
 
-        else if (val == '83') {               //S
-            //window.alert("down");
-            if (maze.isValid(canvas,step,"down",val_right_two,val_up_two)){
-                maze.removeCircle(canvas,step,val_right_two,val_up_two);
-                val_up_two +=1;
-                maze.drawCircle(canvas, step,val_right_two,val_up_two,2,width);
-                maze.drawCircle(canvas, step,val_right_one,val_up_one,1,width);
-            }
-        }
-
-        else if (val == '65') {    //A
-            //window.alert("left");
-            if (maze.isValid(canvas,step,"left",val_right_two,val_up_two)){
-                maze.removeCircle(canvas,step,val_right_two,val_up_two);
-                val_right_two -=1;
-                maze.drawCircle(canvas, step,val_right_two,val_up_two,2,width);
-                maze.drawCircle(canvas, step,val_right_one,val_up_one,1,width);
-            }
-        }
-
-
-        else if (val == '68') {               //D
-            //window.alert("right");
-            if (maze.isValid(canvas,step,"right",val_right_two,val_up_two)){
-                maze.removeCircle(canvas,step,val_right_two,val_up_two);
-                val_right_two +=1;
-                maze.drawCircle(canvas, step,val_right_two,val_up_two,2,width);
-                maze.drawCircle(canvas, step,val_right_one,val_up_one,1,width);
-            }
-        }
+        maze.drawCircle(canvas, step,val_right_two,val_up_two,2,width);
+        maze.drawCircle(canvas, step,val_right_one,val_up_one,1,width);
     }
+        
     else {
-        if (val == '87'){
-            maze.destroyWall(canvas,step,val_right_two,val_up_two,2,width,"up");
+
+        switch(val){
+            case 87:
+                maze.destroyWall(canvas,step,val_right_two,val_up_two,2,width,"up");
+                break;
+
+            case 83:
+                maze.destroyWall(canvas,step,val_right_two,val_up_two,2,width,"down");
+                break;
+
+            case 65:
+                maze.destroyWall(canvas,step,val_right_two,val_up_two,2,width,"left");
+                break;
+
+            case 68:
+                maze.destroyWall(canvas,step,val_right_two,val_up_two,2,width,"right");
+                break;        
         }
-        else if (val == '83'){
-            maze.destroyWall(canvas,step,val_right_two,val_up_two,2,width,"down");
-        }
-        else if (val =='65'){
-            maze.destroyWall(canvas,step,val_right_two,val_up_two,2,width,"left");
-        }
-        else if (val == '68'){
-            maze.destroyWall(canvas,step,val_right_two,val_up_two,2,width,"right");
-        }
+        
         dw2 = 2;
     }
 
@@ -269,9 +275,7 @@ if (!(dw1 == 1)){
     
     document.onkeydown = checkKey;
 
-    function checkKey(e) {
-
-        
+    function checkKey(e) {  
         e = e || window.event;
         socket.emit('key code to server', e.keyCode);
     };
