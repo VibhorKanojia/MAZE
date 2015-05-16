@@ -92,6 +92,7 @@ app.get('/', function (req, res) {
 var cells = [];
 
 var myobject={'cells':[]};
+var cellList = [];
 
 io.on('connection', function(socket){
   clients[clients.length] = socket.id;
@@ -99,18 +100,23 @@ io.on('connection', function(socket){
   console.log(socket.id);
   io.to(clients[clients.length-1]).emit('Client ID message', {clientID : curID , socketID  : socket.id});
   if (clients.length > 0){
-      io.to(clients[1]).emit('Use matrix', myobject);
+    for (var i = 0 ; i < clients.length ; i++){
+      io.to(clients[i]).emit('Use matrix', cellList[i-1]);
     }
+  }
+  /*
   socket.on('div message', function(msg){
     //io.toemit('chat message', msg);
     console.log("message received")
     io.to(clients[1]).emit('server message', msg);
     console.log('message: ' + msg);
   });
-
+  */
   socket.on('current matrix', function(data){
-    myobject.cells = data.cells.slice();
-    console.log(myobject.cells.length);
+    cellList.push({'cells' : data.cells.slice()});
+    cellList.push({'cells' : data.cells.slice()});
+    //myobject.cells = data.cells.slice();
+    //console.log(myobject.cells.length);
   });
 
 
@@ -118,7 +124,15 @@ io.on('connection', function(socket){
 
 
   socket.on('key code to server', function(msg){
-    io.emit('move blocks', msg);
+    var senderID = msg.clientID;
+    if (senderID % 2 == 0){
+      io.to(clients[senderID]).emit('move blocks', msg.keycode);
+      io.to(clients[senderID+1]).emit('move blocks', msg.keycode);
+    }
+    else {
+      io.to(clients[senderID]).emit('move blocks', msg.keycode);
+      io.to(clients[senderID-1]).emit('move blocks', msg.keycode);
+    }
   });
   //socket.emit('servermsg',"HEldl");
 });

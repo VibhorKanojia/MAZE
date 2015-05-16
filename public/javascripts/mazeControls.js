@@ -45,10 +45,9 @@ function drawMaze() {
     context.fillRect(0, 0, canvas_width, canvas_height);
     maze = new Maze(width, height); 
 
-    if (clientID == 0){
-   
+    if (clientID % 2 ==  0){
+        window.alert(clientID);
         clobject.cells = maze.draw(canvas, step);
-   
         socket.emit('current matrix', clobject);
     }
     else {
@@ -277,7 +276,7 @@ function moveBlocks(val){
 
     function checkKey(e) {  
         e = e || window.event;
-        socket.emit('key code to server', e.keyCode);
+        socket.emit('key code to server', {'keycode' : e.keyCode, 'clientID' : clientID});
     };
 };
 

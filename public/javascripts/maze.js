@@ -159,7 +159,7 @@ function Maze(width, height) {
 
         //window.alert((ref_obj.cells).length);
         if (ref_obj){
-            window.alert((ref_obj.cells).length);
+            //window.alert((ref_obj.cells).length);
             cells = (ref_obj.cells).slice();
         } 
         colors = {};
