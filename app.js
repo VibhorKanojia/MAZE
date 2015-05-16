@@ -126,12 +126,12 @@ io.on('connection', function(socket){
       if (data.senderID %2 == 0){
         cellList[data.senderID] = {'cells' : data.matrix.cells.slice()};
         cellList[data.senderID +1] = {'cells' : data.matrix.cells.slice()};
-        io.to(clients[data.senderID+1]).emit('Change Difficulty'); 
+        io.to(clients[data.senderID+1]).emit('Change Difficulty', data.diff_flag); 
       }
       else{
         cellList[data.senderID] = {'cells' : data.matrix.cells.slice()};
         cellList[data.senderID - 1] = {'cells' : data.matrix.cells.slice()}; 
-        io.to(clients[data.senderID-1]).emit('Change Difficulty');
+        io.to(clients[data.senderID-1]).emit('Change Difficulty', data.diff_flag);
       }
     }
     //myobject.cells = data.cells.slice();

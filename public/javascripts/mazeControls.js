@@ -36,7 +36,7 @@ function drawMaze(diff_flag) {
     dw1 = 0;                //destroy wall player 1
     dw2 = 0;                //destroy wall player 2
 
-    val_right_one = 0;
+    val_right_one = 0;                                                  //FUCKING COMPLICATED STUFF AHEAD
     val_up_one = 0;
     val_right_two = 0;
     val_up_two = 0;
@@ -47,14 +47,15 @@ function drawMaze(diff_flag) {
 
     if (clientID % 2 ==  0){
         clobject.cells = maze.draw(canvas, step);
-        if (diff_flag == 1){
-            socket.emit('current matrix', {'matrix' : clobject, 'senderID' : clientID});    
-        }
-        else if (diff_flag == 0) {
+        
+        if (diff_flag == 0) {           //DIFF FLAG = 0 => first client starting the game for the first time or refresh button pressed
             var noID = -1;
-            socket.emit('current matrix', {'matrix' : clobject, 'senderID' : noID});
+            socket.emit('current matrix', {'matrix' : clobject, 'senderID' : noID, 'diff_flag' : diff_flag});
         }
-        else if (diff_flag == 2){
+        else if (diff_flag == 1 || diff_flag == 3){ //DIFF FLAG = 1 => difficulty changed ; DIFF_FLAG =3 => refresh button pressed
+            socket.emit('current matrix', {'matrix' : clobject, 'senderID' : clientID, 'diff_flag' : diff_flag});    
+        }
+        else if (diff_flag == 2){   // DIFF_FLAG = 2 => difficulty changed or refresh button pressed by opponent
             socket.emit('Request Maze', clientID);
             socket.on('Use matrix', function (data){
                 maze.draw(canvas,step,data);    
@@ -63,15 +64,17 @@ function drawMaze(diff_flag) {
         
     }
     else {
-        if (diff_flag == 1){
-            clobject.cells = maze.draw(canvas, step);
-            socket.emit('current matrix', {'matrix' : clobject, 'senderID' : clientID});    
-        }
-        else{
+        
+        if (diff_flag == 0) {   //DIFF_FLAG = 0 => second client connecting for the first time or refresh button button pressed by opponent or difficulty changed by opponent.
             socket.emit('Request Maze', clientID);
             socket.on('Use matrix', function (data){
                 maze.draw(canvas,step,data);    
             });
+        }
+
+        else if (diff_flag == 1 || diff_flag == 3){ // 1 => difficulty changed by player ; 3 => refresh button pressed by player
+            clobject.cells = maze.draw(canvas, step);
+            socket.emit('current matrix', {'matrix' : clobject, 'senderID' : clientID, 'diff_flag' : diff_flag});    
         }        
     }
 
@@ -143,12 +146,22 @@ window.onload = function () {
         drawMaze(0);
     });
 
-    socket.on('Change Difficulty', function(){
+    socket.on('Change Difficulty', function(data){
         if (clientID % 2 == 0){
-            changeDifficulty(2);
+            if (data == 3){
+                drawMaze(2);
+            }
+            else{
+                changeDifficulty(2);
+            }
         }
         else {
-            changeDifficulty(0);
+            if (data == 3){
+                drawMaze(0);
+            }
+            else{
+                changeDifficulty(0);
+            }
         }
     });
 
