@@ -99,11 +99,16 @@ io.on('connection', function(socket){
   var curID = clients.length -1;
   console.log(socket.id);
   io.to(clients[clients.length-1]).emit('Client ID message', {clientID : curID , socketID  : socket.id});
-  if (clients.length > 0){
-    for (var i = 0 ; i < clients.length ; i++){
-      io.to(clients[i]).emit('Use matrix', cellList[i-1]);
+  
+
+  socket.on('Request Maze', function(data){
+    if (data % 2 == 0){
+      io.to(clients[data]).emit('Use matrix', cellList[data+1]);
     }
-  }
+    else {
+      io.to(clients[data]).emit('Use matrix', cellList[data-1]);
+    }
+  });
   /*
   socket.on('div message', function(msg){
     //io.toemit('chat message', msg);
@@ -113,8 +118,22 @@ io.on('connection', function(socket){
   });
   */
   socket.on('current matrix', function(data){
-    cellList.push({'cells' : data.cells.slice()});
-    cellList.push({'cells' : data.cells.slice()});
+    if (data.senderID == -1){
+      cellList.push({'cells' : data.matrix.cells.slice()});
+      cellList.push({'cells' : data.matrix.cells.slice()});
+    }
+    else{
+      if (data.senderID %2 == 0){
+        cellList[data.senderID] = {'cells' : data.matrix.cells.slice()};
+        cellList[data.senderID +1] = {'cells' : data.matrix.cells.slice()};
+        io.to(clients[data.senderID+1]).emit('Change Difficulty'); 
+      }
+      else{
+        cellList[data.senderID] = {'cells' : data.matrix.cells.slice()};
+        cellList[data.senderID - 1] = {'cells' : data.matrix.cells.slice()}; 
+        io.to(clients[data.senderID-1]).emit('Change Difficulty');
+      }
+    }
     //myobject.cells = data.cells.slice();
     //console.log(myobject.cells.length);
   });

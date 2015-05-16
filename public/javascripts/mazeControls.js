@@ -31,7 +31,7 @@ var canvas = document.createElement("canvas"),
         context = canvas.getContext('2d'),
         gradient = context.createLinearGradient(0, 0, canvas_width, canvas_height);
 
-function drawMaze() {
+function drawMaze(diff_flag) {
     
     dw1 = 0;                //destroy wall player 1
     dw2 = 0;                //destroy wall player 2
@@ -46,16 +46,33 @@ function drawMaze() {
     maze = new Maze(width, height); 
 
     if (clientID % 2 ==  0){
-        window.alert(clientID);
         clobject.cells = maze.draw(canvas, step);
-        socket.emit('current matrix', clobject);
+        if (diff_flag == 1){
+            socket.emit('current matrix', {'matrix' : clobject, 'senderID' : clientID});    
+        }
+        else if (diff_flag == 0) {
+            var noID = -1;
+            socket.emit('current matrix', {'matrix' : clobject, 'senderID' : noID});
+        }
+        else if (diff_flag == 2){
+            socket.emit('Request Maze', clientID);
+            socket.on('Use matrix', function (data){
+                maze.draw(canvas,step,data);    
+            });
+        }
+        
     }
     else {
-        window.alert(clientID);
-        socket.on('Use matrix', function (data){
-            maze.draw(canvas,step,data);    
-        });
-        
+        if (diff_flag == 1){
+            clobject.cells = maze.draw(canvas, step);
+            socket.emit('current matrix', {'matrix' : clobject, 'senderID' : clientID});    
+        }
+        else{
+            socket.emit('Request Maze', clientID);
+            socket.on('Use matrix', function (data){
+                maze.draw(canvas,step,data);    
+            });
+        }        
     }
 
 };
@@ -67,7 +84,7 @@ function solveMaze() {
         maze.drawSolution(canvas);
     };
 
-function changeDifficulty() {
+function changeDifficulty(flag) {
         difficulty = (difficulty +1)%3;
         if (difficulty == 0){
             width = 20;
@@ -84,7 +101,7 @@ function changeDifficulty() {
         }
         context.clearRect ( 0 , 0 , canvas.width, canvas.height);
         step = (canvas_width-1) / Math.max(width, height);
-        drawMaze();
+        drawMaze(flag);
     };
     
 window.onload = function () {
@@ -123,7 +140,16 @@ window.onload = function () {
     
         clientID = data.clientID;
         socketID = data.socketID;
-        drawMaze();
+        drawMaze(0);
+    });
+
+    socket.on('Change Difficulty', function(){
+        if (clientID % 2 == 0){
+            changeDifficulty(2);
+        }
+        else {
+            changeDifficulty(0);
+        }
     });
 
 
@@ -268,9 +294,7 @@ else {
 
 };
 
-
-
-    
+   
     
     document.onkeydown = checkKey;
 
