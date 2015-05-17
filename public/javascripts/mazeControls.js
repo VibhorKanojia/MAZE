@@ -322,6 +322,7 @@ else {
 
     function checkKey(e) {  
         e = e || window.event;
+        e.preventDefault();
         socket.emit('key code to server', {'keycode' : e.keyCode, 'clientID' : clientID});
     };
 };
