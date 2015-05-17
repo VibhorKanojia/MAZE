@@ -11,6 +11,9 @@ function getDATA(){
 
 var clobject = {'cells':[]};
 
+var audio = new Audio('blop.mp3');
+
+
 var difficulty = 1;
 var canvas_width = 601;
 var canvas_height = 601;
@@ -143,8 +146,10 @@ window.onload = function () {
     
         clientID = data.clientID;
         socketID = data.socketID;
-        drawMaze(0);
+        // drawMaze(0); // RELOAD BUTTON IS PRESSED TO START A GAME
     });
+
+
 
     socket.on('Change Difficulty', function(data){
         if (clientID % 2 == 0){
@@ -180,7 +185,8 @@ if (player % 2 == 0){
             case 38:            
                 if (maze.isValid(canvas,step,"up",val_right_one,val_up_one)){
                     maze.removeCircle(canvas,step,val_right_one,val_up_one);
-                    val_up_one -=1;        
+                    val_up_one -=1;
+                    audio.play();        
                 }
                 break;
 
@@ -188,6 +194,7 @@ if (player % 2 == 0){
                 if (maze.isValid(canvas,step,"down",val_right_one,val_up_one)){
                     maze.removeCircle(canvas,step,val_right_one,val_up_one);
                     val_up_one +=1;
+                    audio.play();
                 }
                 break;
 
@@ -195,6 +202,7 @@ if (player % 2 == 0){
                 if (maze.isValid(canvas,step,"left",val_right_one,val_up_one)){
                     maze.removeCircle(canvas,step,val_right_one,val_up_one);
                     val_right_one -=1;
+                    audio.play();
                 }
                 break;
 
@@ -202,6 +210,7 @@ if (player % 2 == 0){
                 if (maze.isValid(canvas,step,"right",val_right_one,val_up_one)){
                     maze.removeCircle(canvas,step,val_right_one,val_up_one);
                     val_right_one +=1;
+                    audio.play();
                 }
                 break;
             case 66:

@@ -21,8 +21,10 @@ body, html { font-size: 100%; padding: 0; margin: 0; height: 100%; }
 
 body {
 	font-family: 'Lato', Calibri, Arial, sans-serif;
-	color: #aaa;
+	color: #111;
 	background: #fff;
+	font-weight: 300;
+	font-style: italic;
 }
 
 a {
