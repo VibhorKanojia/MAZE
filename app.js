@@ -74,11 +74,9 @@ io.on('connection', function(socket){
   socket.on('key code to server', function(msg){
     var senderID = msg.clientID;
     if (senderID % 2 == 0){
-      io.to(clients[senderID]).emit('move blocks', {'val': msg.keycode, 'player': senderID});
       io.to(clients[senderID+1]).emit('move blocks', {'val':msg.keycode, 'player':senderID+1});
     }
     else {
-      io.to(clients[senderID]).emit('move blocks', {'val': msg.keycode, 'player':senderID-1});
       io.to(clients[senderID-1]).emit('move blocks', {'val': msg.keycode, 'player':senderID});
     }
   });

@@ -323,6 +323,7 @@ else {
     function checkKey(e) {  
         e = e || window.event;
         e.preventDefault();
+        moveBlocks(e.keyCode, 2);
         socket.emit('key code to server', {'keycode' : e.keyCode, 'clientID' : clientID});
     };
 };
