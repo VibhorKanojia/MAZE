@@ -5,8 +5,15 @@ var socketID;
 var socket;
   
 
-function getDATA(){
-    window.alert(clientID + " " + socketID);
+function getCode(){
+    var connID = prompt("Please enter the code", "");
+    socket.emit('Connect Code', {'connTo' : connID, 'myID' : socketID});
+    socket.on('Set ID', function(clID){
+        clientID = clID;
+        alert(clientID);
+        drawMaze(0, 1);
+    });
+    
 }
 
 var clobject = {'cells':[]};
@@ -34,7 +41,7 @@ var canvas = document.createElement("canvas"),
         context = canvas.getContext('2d'),
         gradient = context.createLinearGradient(0, 0, canvas_width, canvas_height);
 
-function drawMaze(diff_flag) {
+function drawMaze(diff_flag, clflag) {
     
     dw1 = 0;                //destroy wall player 1
     dw2 = 0;                //destroy wall player 2
@@ -48,15 +55,29 @@ function drawMaze(diff_flag) {
     context.fillRect(0, 0, canvas_width, canvas_height);
     maze = new Maze(width, height); 
 
-    if (clientID % 2 ==  0){
+    if (clflag == 0){
+        alert("Client ID is " + clientID);
         clobject.cells = maze.draw(canvas, step);
         
         if (diff_flag == 0) {           //DIFF FLAG = 0 => first client starting the game for the first time or refresh button pressed
             var noID = -1;
             socket.emit('current matrix', {'matrix' : clobject, 'senderID' : noID, 'diff_flag' : diff_flag});
         }
-        else if (diff_flag == 1 || diff_flag == 3){ //DIFF FLAG = 1 => difficulty changed ; DIFF_FLAG =3 => refresh button pressed
+        else if (diff_flag == 1){ //DIFF FLAG = 1 => difficulty changed
             socket.emit('current matrix', {'matrix' : clobject, 'senderID' : clientID, 'diff_flag' : diff_flag});    
+        }
+
+        else if (diff_flag == 3){ //DIFF_FLAG =3 => refresh button pressed
+            if (!clientID){
+                socket.emit('Get ClientID', socketID);
+                socket.on('Set ClientID', function(id){
+                    clientID = id;
+                    alert("ID is " + clientID);
+                    alert("send this code to your friend : "+ socketID);
+                    socket.emit('current matrix', {'matrix' : clobject, 'senderID' : clientID, 'diff_flag' : diff_flag});
+                });
+            }
+
         }
         else if (diff_flag == 2){   // DIFF_FLAG = 2 => difficulty changed or refresh button pressed by opponent
             socket.emit('Request Maze', clientID);
@@ -142,11 +163,8 @@ window.onload = function () {
 
     socket = io();
 
-    socket.on('Client ID message', function(data){
-    
-        clientID = data.clientID;
-        socketID = data.socketID;
-        // drawMaze(0); // RELOAD BUTTON IS PRESSED TO START A GAME
+    socket.on('SocketID message', function(data){
+        socketID = data;
     });
 
 
@@ -323,7 +341,7 @@ else {
     function checkKey(e) {  
         e = e || window.event;
         e.preventDefault();
-        moveBlocks(e.keyCode, 2);
+        moveBlocks(e.keyCode, 2);           //even (e.g 2) => move myself ; odd => move other player
         socket.emit('key code to server', {'keycode' : e.keyCode, 'clientID' : clientID});
     };
 };

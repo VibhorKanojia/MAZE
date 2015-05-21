@@ -25,22 +25,29 @@ var cells = [];
 var myobject={'cells':[]};
 var cellList = [];
 
+var LastClientID = 0;
 io.on('connection', function(socket){
-  clients[clients.length] = socket.id;
-  var curID = clients.length -1;
-  console.log(socket.id);
-  io.to(clients[clients.length-1]).emit('Client ID message', {clientID : curID , socketID  : socket.id});
+  io.to(socket.id).emit('SocketID message', socket.id);
   
-
-  
-  /*
-  socket.on('div message', function(msg){
-    //io.toemit('chat message', msg);
-    console.log("message received")
-    io.to(clients[1]).emit('server message', msg);
-    console.log('message: ' + msg);
+  socket.on('Get ClientID', function(socketid){
+    clients[LastClientID] = socketid;
+    io.to(socketid).emit('Set ClientID', LastClientID);
+    console.log("Sent " + LastClientID);
+    LastClientID += 2;
   });
-  */
+
+  socket.on('Connect Code', function(code){
+    var index;
+    for (index = 0 ; index < LastClientID ; index++){
+      if (clients[index] == code.connTo){
+        clients[index+1] = code.myID;
+        console.log(index + " matched");
+        break;
+      }
+    }
+    io.to(clients[index+1]).emit('Set ID', index+1);
+  });
+
   socket.on('current matrix', function(data){
     if (data.senderID == -1){
       cellList.push({'cells' : data.matrix.cells.slice()});
@@ -80,7 +87,11 @@ io.on('connection', function(socket){
       io.to(clients[senderID-1]).emit('move blocks', {'val': msg.keycode, 'player':senderID});
     }
   });
-  //socket.emit('servermsg',"HEldl");
+
+
+  socket.on('Connect Code', function(code){
+    console.log(code);
+  });
 });
   
 http.listen(process.env.PORT || 3000, function(){
