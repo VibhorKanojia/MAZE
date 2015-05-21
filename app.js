@@ -25,7 +25,7 @@ var cells = [];
 var myobject={'cells':[]};
 var cellList = [];
 
-var LastClientID = 0;
+var LastClientID = 2;
 io.on('connection', function(socket){
   io.to(socket.id).emit('SocketID message', socket.id);
   
@@ -38,7 +38,7 @@ io.on('connection', function(socket){
 
   socket.on('Connect Code', function(code){
     var index;
-    for (index = 0 ; index < LastClientID ; index++){
+    for (index = 2 ; index < LastClientID ; index++){
       if (clients[index] == code.connTo){
         clients[index+1] = code.myID;
         console.log(index + " matched");
@@ -49,22 +49,17 @@ io.on('connection', function(socket){
   });
 
   socket.on('current matrix', function(data){
-    if (data.senderID == -1){
-      cellList.push({'cells' : data.matrix.cells.slice()});
-      cellList.push({'cells' : data.matrix.cells.slice()});
+    if (data.senderID %2 == 0){
+      cellList[data.senderID] = {'cells' : data.matrix.cells.slice()};
+      cellList[data.senderID +1] = {'cells' : data.matrix.cells.slice()};
+      io.to(clients[data.senderID+1]).emit('Change Difficulty', data.diff_flag); 
     }
     else{
-      if (data.senderID %2 == 0){
-        cellList[data.senderID] = {'cells' : data.matrix.cells.slice()};
-        cellList[data.senderID +1] = {'cells' : data.matrix.cells.slice()};
-        io.to(clients[data.senderID+1]).emit('Change Difficulty', data.diff_flag); 
-      }
-      else{
-        cellList[data.senderID] = {'cells' : data.matrix.cells.slice()};
-        cellList[data.senderID - 1] = {'cells' : data.matrix.cells.slice()}; 
-        io.to(clients[data.senderID-1]).emit('Change Difficulty', data.diff_flag);
-      }
+      cellList[data.senderID] = {'cells' : data.matrix.cells.slice()};
+      cellList[data.senderID - 1] = {'cells' : data.matrix.cells.slice()}; 
+      io.to(clients[data.senderID-1]).emit('Change Difficulty', data.diff_flag);
     }
+    
   });
 
 

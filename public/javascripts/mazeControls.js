@@ -7,14 +7,14 @@ var socket;
 
 function getCode(){
     var connID = prompt("Please enter the code", "");
+    
     socket.emit('Connect Code', {'connTo' : connID, 'myID' : socketID});
+    
     socket.on('Set ID', function(clID){
         clientID = clID;
-        alert(clientID);
-        drawMaze(0, 1);
-    });
-    
-}
+        drawMaze(2);
+    });   
+};
 
 var clobject = {'cells':[]};
 
@@ -41,7 +41,7 @@ var canvas = document.createElement("canvas"),
         context = canvas.getContext('2d'),
         gradient = context.createLinearGradient(0, 0, canvas_width, canvas_height);
 
-function drawMaze(diff_flag, clflag) {
+function drawMaze(diff_flag){
     
     dw1 = 0;                //destroy wall player 1
     dw2 = 0;                //destroy wall player 2
@@ -55,85 +55,69 @@ function drawMaze(diff_flag, clflag) {
     context.fillRect(0, 0, canvas_width, canvas_height);
     maze = new Maze(width, height); 
 
-    if (clflag == 0){
-        alert("Client ID is " + clientID);
-        clobject.cells = maze.draw(canvas, step);
+    clobject.cells = maze.draw(canvas, step);
         
-        if (diff_flag == 0) {           //DIFF FLAG = 0 => first client starting the game for the first time or refresh button pressed
-            var noID = -1;
-            socket.emit('current matrix', {'matrix' : clobject, 'senderID' : noID, 'diff_flag' : diff_flag});
-        }
-        else if (diff_flag == 1){ //DIFF FLAG = 1 => difficulty changed
-            socket.emit('current matrix', {'matrix' : clobject, 'senderID' : clientID, 'diff_flag' : diff_flag});    
-        }
-
-        else if (diff_flag == 3){ //DIFF_FLAG =3 => refresh button pressed
-            if (!clientID){
-                socket.emit('Get ClientID', socketID);
-                socket.on('Set ClientID', function(id){
-                    clientID = id;
-                    alert("ID is " + clientID);
-                    alert("send this code to your friend : "+ socketID);
-                    socket.emit('current matrix', {'matrix' : clobject, 'senderID' : clientID, 'diff_flag' : diff_flag});
-                });
-            }
-
-        }
-        else if (diff_flag == 2){   // DIFF_FLAG = 2 => difficulty changed or refresh button pressed by opponent
-            socket.emit('Request Maze', clientID);
-            socket.on('Use matrix', function (data){
-                maze.draw(canvas,step,data);    
-            });
-        }
-        
+    if (diff_flag == 1){ //DIFF FLAG = 1 => difficulty changed by you
+        socket.emit('current matrix', {'matrix' : clobject, 'senderID' : clientID, 'diff_flag' : diff_flag});    
     }
-    else {
+
+    else if (diff_flag == 2){   // DIFF_FLAG = 2 => when you request a matrix, happens when opponent changes level or presses refresh button
+        socket.emit('Request Maze', clientID);
         
-        if (diff_flag == 0) {   //DIFF_FLAG = 0 => second client connecting for the first time or refresh button button pressed by opponent or difficulty changed by opponent.
-            socket.emit('Request Maze', clientID);
-            socket.on('Use matrix', function (data){
-                maze.draw(canvas,step,data);    
+        socket.on('Use matrix', function (data){
+            maze.draw(canvas,step,data);    
+        });
+    }
+
+    else if (diff_flag == 3){ //DIFF_FLAG =3 => refresh button pressed by you
+        if (!clientID){
+            socket.emit('Get ClientID', socketID);
+              
+            socket.on('Set ClientID', function(id){
+                clientID = id;
+                prompt("Send this code to your friend", socketID);
+                socket.emit('current matrix', {'matrix' : clobject, 'senderID' : clientID, 'diff_flag' : diff_flag});
             });
         }
 
-        else if (diff_flag == 1 || diff_flag == 3){ // 1 => difficulty changed by player ; 3 => refresh button pressed by player
-            clobject.cells = maze.draw(canvas, step);
-            socket.emit('current matrix', {'matrix' : clobject, 'senderID' : clientID, 'diff_flag' : diff_flag});    
-        }        
-    }
-
+        else{
+            socket.emit('current matrix', {'matrix' : clobject, 'senderID' : clientID, 'diff_flag' : diff_flag});
+        }
+    }    
 };
 
 
 
 
 function solveMaze() {
-        maze.drawSolution(canvas);
-    };
+    maze.drawSolution(canvas);
+};
 
 function changeDifficulty(flag) {
-        difficulty = (difficulty +1)%3;
-        if (difficulty == 0){
-            width = 20;
-            height = 20;
-        }
-        else if (difficulty == 1){
-            width = 30;
-            height = 30;
-        }
+    difficulty = (difficulty +1)%3;
+    if (difficulty == 0){
+        width = 20;
+        height = 20;
+    }
 
-        else if (difficulty == 2){
-            width = 40;
-            height = 40;
-        }
-        context.clearRect ( 0 , 0 , canvas.width, canvas.height);
-        step = (canvas_width-1) / Math.max(width, height);
-        drawMaze(flag);
-    };
+    else if (difficulty == 1){
+        width = 30;
+        height = 30;
+    }
+
+    else if (difficulty == 2){
+        width = 40;
+        height = 40;
+    }
+
+    context.clearRect ( 0 , 0 , canvas.width, canvas.height);
+    step = (canvas_width-1) / Math.max(width, height);
+    drawMaze(flag);
+    
+};
     
 window.onload = function () {
     
- 
     canvas.setAttribute("width", "801");
     canvas.setAttribute("height", "801");
 
@@ -170,21 +154,11 @@ window.onload = function () {
 
 
     socket.on('Change Difficulty', function(data){
-        if (clientID % 2 == 0){
-            if (data == 3){
-                drawMaze(2);
-            }
-            else{
-                changeDifficulty(2);
-            }
+        if (data == 3){
+            drawMaze(2);      // 2=> request for matrix, 0 => even numbered client
         }
-        else {
-            if (data == 3){
-                drawMaze(0);
-            }
-            else{
-                changeDifficulty(0);
-            }
+        else{
+            changeDifficulty(2); // 2=> request for matrix, 0 => even numbered client
         }
     });
 
