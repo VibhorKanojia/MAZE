@@ -153,12 +153,12 @@ window.onload = function () {
 
 
 
-    socket.on('Change Difficulty', function(data){
-        if (data == 3){
-            drawMaze(2);      // 2=> request for matrix, 0 => even numbered client
+    socket.on('Change Matrix', function(data){
+        if (data == 3){         // 3 => refresh button is pressed by opponent
+            drawMaze(2);      // 2=> therefore only request for matrix
         }
-        else{
-            changeDifficulty(2); // 2=> request for matrix, 0 => even numbered client
+        else{               // data == 1 => level changed by opponent
+            changeDifficulty(2); // 2=> change your level and then request for matrix
         }
     });
 
