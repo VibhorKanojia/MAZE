@@ -165,7 +165,7 @@
 	float:left;
 	margin:10px 0px 10px 70px;
 	cursor:pointer;
-	background: -moz-linear-gradient(0% 100% 90deg, #891100 0%, #B51700 50%, #c63929 50%, #EE432E 100%);
+	background: -moz-linear-gradient(0% 100% 90deg, #40AFD4 0%, #0099CC 50%, #0099CC 50%, #40AFD4 100%);
 	background: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0, #40AFD4), color-stop(0.5, #0099CC), color-stop(0.5, #0099CC), color-stop(1, #40AFD4));
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
@@ -189,7 +189,7 @@
 }
 .button:active{
 	
-	background: -moz-linear-gradient(0% 100% 90deg, #891100 0%, #B51700 50%, #c63929 50%, #EE432E 100%);
+	background: -moz-linear-gradient(0% 100% 90deg, #40AFD4 0%, #0099CC 50%, #0099CC 50%, #40AFD4 100%);
 	background: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0, #40AFD4), color-stop(0.5, #0099CC), color-stop(0.5, #0099CC), color-stop(1, #40AFD4));
 	-moz-box-shadow: inset 0px 0px 0px 1px rgba(23, 63, 76, 0.4), 0 1px 3px #173F4C;
 	-webkit-box-shadow: inset 0px 0px 0px 1px rgba(23, 63, 76, 0.4), 0 1px 3px #173F4C;

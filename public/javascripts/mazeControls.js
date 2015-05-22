@@ -3,7 +3,8 @@
 var clientID;
 var socketID;
 var socket;
-  
+var seconds = 0;
+var minutes = 0;
 
 function getCode(){
     var connID = prompt("Please enter the code", "");
@@ -13,6 +14,7 @@ function getCode(){
     socket.on('Set ID', function(clID){
         clientID = clID;
         socket.emit('Show Canvas', clientID);
+        changeTime();
         drawMaze(2);
     });   
 };
@@ -43,7 +45,8 @@ var canvas = document.createElement("canvas"),
         gradient = context.createLinearGradient(0, 0, canvas_width, canvas_height);
 
 function drawMaze(diff_flag){
-    
+    seconds = 0;
+    minutes = 0;
     dw1 = 0;                //destroy wall player 1
     dw2 = 0;                //destroy wall player 2
 
@@ -94,6 +97,33 @@ function drawMaze(diff_flag){
 function solveMaze() {
     maze.drawSolution(canvas);
 };
+
+function changeTime(){
+    setInterval(function() {
+        seconds++;
+        if (seconds == 60){
+            seconds =0;
+            minutes++;
+        }
+        var time = document.getElementById("time");
+        if (minutes < 10){
+            if (seconds < 10){
+                time.innerHTML = "0"+minutes+":0"+seconds;
+            }
+            else if (seconds < 60){
+                time.innerHTML = "0"+minutes+":"+seconds;
+            }
+        }
+        else{
+            if (seconds < 10){
+                time.innerHTML = minutes+":0"+seconds;
+            }
+            else if (seconds < 60){
+                time.innerHTML = minutes+":"+seconds;
+            }   
+        }
+    }, 1000);
+}
 
 function changeDifficulty(flag) {
     difficulty = (difficulty +1)%3;
@@ -154,6 +184,7 @@ window.onload = function () {
     });
 
     socket.on('Show Canvas', function(){
+        changeTime();
         canvas.style.display="block";
     });
 
