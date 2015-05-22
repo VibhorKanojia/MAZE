@@ -173,7 +173,7 @@ function Maze(width, height) {
         try {
 	    var context = canvas.getContext('2d');
         } catch (e) {
-	    // We can't do anything if canvas isn't supported...
+	    //Canvas isn't supported...
 	    return;
         }
 
@@ -322,15 +322,6 @@ function Maze(width, height) {
                     window.alert("Player 2 Won");
                 }   
             }
-            /*
-            context.beginPath();
-            
-            context.arc(1+val_right_one*step+step/3,1+val_up_one*step+step/3,step/3,0,2*Math.PI);    
-            //context.arc(1+val*step+step/3,1+step/2,step/3,0,2*Math.PI);
-            context.closePath();
-            context.fill();
-            */
-            
         };
                 
         this.destroyWall = function (canvas, step, val_right,val_up, player, width, direction){
@@ -389,17 +380,6 @@ function Maze(width, height) {
            
             context.fillStyle = 'white';
             context.fillRect(5+val_right*step, 5+val_up*step, step - 5, step - 5);
-
-            /*
-            context.beginPath();
-            context.arc(1+val_right_one*step+step/3,1+val_up_one*step+step/3,step/3,0,2*Math.PI);    
-            context.closePath();
-            
-            context.fill();
-            context.lineWidth = 1;
-            context.strokeStyle = 'white';
-            context.stroke();
-            */
         };
 
         return cells;
