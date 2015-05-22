@@ -48,6 +48,10 @@ io.on('connection', function(socket){
     io.to(clients[index+1]).emit('Set ID', index+1);
   });
 
+  socket.on('Show Canvas', function(senderID){
+      io.to(clients[senderID-1]).emit('Show Canvas');
+  });
+
   socket.on('current matrix', function(data){
     if (data.senderID %2 == 0){
       cellList[data.senderID] = {'cells' : data.matrix.cells.slice()};

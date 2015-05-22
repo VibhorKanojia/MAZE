@@ -12,6 +12,7 @@ function getCode(){
     
     socket.on('Set ID', function(clID){
         clientID = clID;
+        socket.emit('Show Canvas', clientID);
         drawMaze(2);
     });   
 };
@@ -56,7 +57,6 @@ function drawMaze(diff_flag){
     maze = new Maze(width, height); 
 
     clobject.cells = maze.draw(canvas, step);
-        
     if (diff_flag == 1){ //DIFF FLAG = 1 => difficulty changed by you
         socket.emit('current matrix', {'matrix' : clobject, 'senderID' : clientID, 'diff_flag' : diff_flag});    
     }
@@ -65,7 +65,7 @@ function drawMaze(diff_flag){
         socket.emit('Request Maze', clientID);
         
         socket.on('Use matrix', function (data){
-            maze.draw(canvas,step,data);    
+            maze.draw(canvas,step,data);
         });
     }
 
@@ -75,6 +75,7 @@ function drawMaze(diff_flag){
               
             socket.on('Set ClientID', function(id){
                 clientID = id;
+                canvas.style.display = "none";
                 prompt("Send this code to your friend", socketID);
                 socket.emit('current matrix', {'matrix' : clobject, 'senderID' : clientID, 'diff_flag' : diff_flag});
             });
@@ -151,7 +152,9 @@ window.onload = function () {
         socketID = data;
     });
 
-
+    socket.on('Show Canvas', function(){
+        canvas.style.display="block";
+    });
 
     socket.on('Change Matrix', function(data){
         if (data == 3){         // 3 => refresh button is pressed by opponent
