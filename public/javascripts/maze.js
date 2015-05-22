@@ -1,6 +1,8 @@
 
+var endFlag = 0;
 
 function Maze(width, height) {
+    endFlag = 0;
     var cells = [],
         visited = 0, // The number of cells already visited.
         solution = []; // The solution to the maze.
@@ -261,6 +263,7 @@ function Maze(width, height) {
 
 
         this.isValid = function(canvas, step, direction, cell_x, cell_y){
+            if (endFlag == 1) return false;
             if (direction == "up" && cells[cell_x][cell_y].walls.n){
                 //window.alert("can't move up");
                 return false;
@@ -285,7 +288,7 @@ function Maze(width, height) {
 
 
         this.drawCircle = function (canvas, step, val_right,val_up, player,width){
-            
+            if (endFlag == 1) return;            
 
             if (typeof canvas == "string") {
              canvas = document.getElementById(canvas);
@@ -310,10 +313,12 @@ function Maze(width, height) {
 
             if (val_right == width -1 && val_up == width -1){
                 if (player == 1){
+                    endFlag = 1;
                     window.alert("Player 1 Won");
                 }
 
                 else if (player == 2){
+                    endFlag = 1;
                     window.alert("Player 2 Won");
                 }   
             }

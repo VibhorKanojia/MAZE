@@ -52,6 +52,7 @@ function drawMaze(diff_flag){
     val_right_two = 0;
     val_up_two = 0;
 
+
     context.fillStyle = "#FFFFFF";
     context.fillRect(0, 0, canvas_width, canvas_height);
     maze = new Maze(width, height); 
