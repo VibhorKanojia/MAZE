@@ -70,6 +70,7 @@ function drawMaze(diff_flag){
         
         socket.on('Use matrix', function (data){
             maze.draw(canvas,step,data);
+            canvas.style.display="block";
         });
     }
 
