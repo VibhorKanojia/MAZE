@@ -32,11 +32,16 @@ Maze Game
 <div id="controls">
 	<div class="hi-icon-wrap hi-icon-effect-1 hi-icon-effect-1a">
 		<div class="hi-icon hi-icon-refresh tour_1" onclick='drawMaze(3)'>Reload</div>
-		<div class="hi-icon hi-icon-screen tour_2" onclick='solveMaze()'>Solution</div>
-		<div class="hi-icon hi-icon-star tour_3" onclick ='changeDifficulty(1)'>Difficulty</div>
-		<div class="hi-icon hi-icon-link tour_4" onclick="getCode()">Connect</div>
-        <div style="padding-top: 30px; color: white; font-style: italic;" id="time">00:00</div>
-		<!--
+		<!-- <div class="hi-icon hi-icon-screen tour_2" onclick='solveMaze()'>Solution</div> -->
+		<div class="hi-icon hi-icon-star tour_2" onclick ='changeDifficulty(1)'>Difficulty</div>
+		<div class="hi-icon hi-icon-link tour_3" onclick="getCode()">Connect</div>
+        <div style="padding-top: 30px;padding-bottom: 30px; color: white; font-style: italic;" id="time">00:00</div>
+        <button class="btn btn-1 btn-1a tour_4" >B</button>
+        <br>
+        <button class="btn btn-1 btn-1a tour_5">F</button>
+        <br>
+        <button class="btn btn-1 btn-1a tour_6">V</button>
+        <!--
 		<div class="hi-icon hi-icon-locked">Security</div>
 	-->
 	</div>	
@@ -84,7 +89,7 @@ Maze Game
                                                 "name"          : "tour_2",
                                                 "bgcolor"       : "#09C",
                                                 "color"         : "white",
-                                                "text"          : "Click this button to view the solution",
+                                                "text"          : "Click this button to change the difficulty",
                                                 "position"      : "LT",
                                                 "time"          : 4000
                                         },
@@ -92,7 +97,7 @@ Maze Game
                                                 "name"          : "tour_3",
                                                 "bgcolor"       : "#09C",
                                                 "color"         : "white",
-                                                "text"          : "Click this button to change the difficulty",
+                                                "text"          : "Click this button to enter the code",
                                                 "position"      : "LT",
                                                 "time"          : 4000
                                         },
@@ -100,10 +105,29 @@ Maze Game
                                                 "name"          : "tour_4",
                                                 "bgcolor"       : "#09C",
                                                 "color"         : "white",
-                                                "text"          : "Click this button to enter the link",
+                                                "text"          : "Press <i><b>B + arraw key</b></i> to destroy a wall.",
+                                                "position"      : "LT",
+                                                "time"          : 4000
+                                        },
+                                        {
+                                                "name"          : "tour_5",
+                                                "bgcolor"       : "#09C",
+                                                "color"         : "white",
+                                                "text"          : "Press <i><b>F</b></i> to flip controls of your opponent for 10 seconds",
+                                                "position"      : "LT",
+                                                "time"          : 4000
+                                        },
+                                        {
+                                                "name"          : "tour_6",
+                                                "bgcolor"       : "#09C",
+                                                "color"         : "white",
+                                                "text"          : "Press <i><b>V</b></i> to to view the solution for 2 seconds",
                                                 "position"      : "LT",
                                                 "time"          : 4000
                                         }
+
+
+
 
                                 ],
                                 //define if steps should change automatically
