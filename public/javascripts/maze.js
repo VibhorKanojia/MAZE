@@ -314,12 +314,12 @@ function Maze(width, height) {
             if (val_right == width -1 && val_up == width -1){
                 if (player == 1){
                     endFlag = 1;
-                    window.alert("Player 1 Won");
+                    window.alert("You Won");
                 }
 
                 else if (player == 2){
                     endFlag = 1;
-                    window.alert("Player 2 Won");
+                    window.alert("Better luck next time!");
                 }   
             }
         };

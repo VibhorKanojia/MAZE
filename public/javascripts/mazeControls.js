@@ -99,7 +99,8 @@ function solveMaze() {
 };
 
 function changeTime(){
-    setInterval(function() {
+    var intervalID = setInterval(function() {
+        if (endFlag == 1) return;
         seconds++;
         if (seconds == 60){
             seconds =0;
