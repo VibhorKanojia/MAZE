@@ -198,6 +198,10 @@
 	transition: all 0.3s;
 }
 
+.btn:disabled{
+	background-color:#AAA;
+}
+
 .btn:after {
 	content: '';
 	position: absolute;

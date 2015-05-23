@@ -237,7 +237,9 @@ function Maze(width, height) {
             if (typeof canvas == "string") {
                 canvas = document.getElementById(canvas);
             }
-            color = "#ccf2ff";
+            if (!color){
+                color = "#ccf2ff";
+            }
 
             try {
 	        var context = canvas.getContext('2d');

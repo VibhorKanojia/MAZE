@@ -50,10 +50,12 @@ function drawMaze(diff_flag){
     dw1 = 0;                //destroy wall player 1
     dw2 = 0;                //destroy wall player 2
 
-    val_right_one = 0;                                                  //FUCKING COMPLICATED STUFF AHEAD
+    val_right_one = 0;                                                  //FUCKING COMPLICATED STUFF 'was' AHEAD. I fucking simplified it :P
     val_up_one = 0;
     val_right_two = 0;
     val_up_two = 0;
+
+    document.getElementById('viewSolution').disabled=false;
 
 
     context.fillStyle = "#FFFFFF";
@@ -97,6 +99,20 @@ function drawMaze(diff_flag){
 
 function solveMaze() {
     maze.drawSolution(canvas);
+    var stopFlag = 0;
+    var solutionInterval = setInterval(function(){
+        if (stopFlag == 1) {
+            maze.drawSolution(canvas,'#FFFFFF');
+            clearInterval(solutionInterval);
+        }
+        else{
+            maze.drawSolution(canvas);
+            stopFlag = 1;
+        }
+
+    }, (difficulty+1)*500);
+
+    document.getElementById('viewSolution').disabled=true;
 };
 
 function changeTime(){
@@ -125,7 +141,7 @@ function changeTime(){
             }   
         }
     }, 1000);
-}
+};
 
 function changeDifficulty(flag) {
     difficulty = (difficulty +1)%3;
