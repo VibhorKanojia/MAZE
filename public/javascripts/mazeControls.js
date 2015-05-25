@@ -56,6 +56,7 @@ function drawMaze(diff_flag){
     val_up_two = 0;
 
     document.getElementById('viewSolution').disabled=false;
+    document.getElementById('breakWall').disabled = false;
 
 
     context.fillStyle = "#FFFFFF";
@@ -83,7 +84,7 @@ function drawMaze(diff_flag){
             socket.on('Set ClientID', function(id){
                 clientID = id;
                 canvas.style.display = "none";
-                prompt("Send this code to your friend", socketID);
+                prompt("Send this code to your friend. Maze will appear after your friend connects.", socketID);
                 socket.emit('current matrix', {'matrix' : clobject, 'senderID' : clientID, 'diff_flag' : diff_flag});
             });
         }
@@ -103,6 +104,8 @@ function solveMaze() {
     var solutionInterval = setInterval(function(){
         if (stopFlag == 1) {
             maze.drawSolution(canvas,'#FFFFFF');
+            maze.drawCircle(canvas, step,val_right_two,val_up_two,2,width);
+            maze.drawCircle(canvas, step,val_right_one,val_up_one,1,width);
             clearInterval(solutionInterval);
         }
         else{
@@ -165,6 +168,199 @@ function changeDifficulty(flag) {
     drawMaze(flag);
     
 };
+
+function moveBlocks(val, player){
+if (player % 2 == 0){
+    if (!(dw1 == 1)){
+
+        switch(val){
+
+            case 38:            
+                if (maze.isValid(canvas,step,"up",val_right_one,val_up_one)){
+                    maze.removeCircle(canvas,step,val_right_one,val_up_one);
+                    val_up_one -=1;
+                    audio.play();        
+                }
+                break;
+
+            case 40:           
+                if (maze.isValid(canvas,step,"down",val_right_one,val_up_one)){
+                    maze.removeCircle(canvas,step,val_right_one,val_up_one);
+                    val_up_one +=1;
+                    audio.play();
+                }
+                break;
+
+            case 37:    
+                if (maze.isValid(canvas,step,"left",val_right_one,val_up_one)){
+                    maze.removeCircle(canvas,step,val_right_one,val_up_one);
+                    val_right_one -=1;
+                    audio.play();
+                }
+                break;
+
+            case 39:
+                if (maze.isValid(canvas,step,"right",val_right_one,val_up_one)){
+                    maze.removeCircle(canvas,step,val_right_one,val_up_one);
+                    val_right_one +=1;
+                    audio.play();
+                }
+                break;
+            case 66:
+                dw1++;
+                break;    
+        }
+
+        maze.drawCircle(canvas, step,val_right_one,val_up_one,1,width);
+        maze.drawCircle(canvas, step,val_right_two,val_up_two,2,width);
+        
+    }
+
+
+    else{     
+
+        switch(val){
+
+            case 38:
+                if (!maze.isValid(canvas,step,"up",val_right_one,val_up_one)){
+                    maze.destroyWall(canvas,step,val_right_one,val_up_one,1,width,"up");
+                    document.getElementById('breakWall').disabled = true;
+                    dw1 = 2;
+                }
+                else{
+                    dw1 = 0;
+                }
+
+                break;
+
+            case 40:
+                if (!maze.isValid(canvas,step,"down",val_right_one,val_up_one)){
+                    maze.destroyWall(canvas,step,val_right_one,val_up_one,1,width,"down");
+                    document.getElementById('breakWall').disabled = true;
+                    dw1 = 2;
+                }
+                else{
+                    dw1 = 0;
+                }
+                break;
+
+            case 37:
+                if (!maze.isValid(canvas,step,"left",val_right_one,val_up_one)){
+                    maze.destroyWall(canvas,step,val_right_one,val_up_one,1,width,"left");
+                    document.getElementById('breakWall').disabled = true;
+                    dw1= 2;
+                }
+                else{
+                    dw1 = 0;
+                }
+                break;
+
+            case 39:
+                if (!maze.isValid(canvas,step,"right",val_right_one,val_up_one)){
+                    maze.destroyWall(canvas,step,val_right_one,val_up_one,1,width,"right");
+                    document.getElementById('breakWall').disabled = true;
+                    dw1 = 2;
+                } 
+                else{
+                    dw1 = 0;
+                }
+                break;               
+        }
+
+    }
+}
+else {
+
+    if (!(dw2==1)){
+
+        switch(val){
+
+            case 38:
+                if (maze.isValid(canvas,step,"up",val_right_two,val_up_two)){
+                    maze.removeCircle(canvas,step,val_right_two,val_up_two);
+                    val_up_two -=1;
+                }    
+                break;
+
+            case 40:
+                if (maze.isValid(canvas,step,"down",val_right_two,val_up_two)){
+                    maze.removeCircle(canvas,step,val_right_two,val_up_two);
+                    val_up_two +=1;
+                }
+                break;
+
+            case 37:
+                if (maze.isValid(canvas,step,"left",val_right_two,val_up_two)){
+                    maze.removeCircle(canvas,step,val_right_two,val_up_two);
+                    val_right_two -=1;
+                }
+                break;
+
+            case 39:
+                if (maze.isValid(canvas,step,"right",val_right_two,val_up_two)){
+                    maze.removeCircle(canvas,step,val_right_two,val_up_two);
+                    val_right_two +=1;
+                }  
+                break;
+            case 66:
+                dw2++;
+                break;      
+        }
+
+        maze.drawCircle(canvas, step,val_right_two,val_up_two,2,width);
+        maze.drawCircle(canvas, step,val_right_one,val_up_one,1,width);
+    }
+        
+    else {
+
+        switch(val){
+            case 38:
+                if (!maze.isValid(canvas,step,"up",val_right_two,val_up_two)){
+                    maze.destroyWall(canvas,step,val_right_two,val_up_two,2,width,"up");
+                    dw2 = 2;            
+                }
+                else{
+                    dw2 = 0;
+                }
+                break;
+
+            case 40:
+                if (!maze.isValid(canvas,step,"down",val_right_two,val_up_two)){
+                    maze.destroyWall(canvas,step,val_right_two,val_up_two,2,width,"down");
+                    dw2 = 2;
+                }
+                else{
+                    dw2 = 0;
+                }
+                break;
+
+            case 37:
+                if (!maze.isValid(canvas,step,"left",val_right_two,val_up_two)){
+                    maze.destroyWall(canvas,step,val_right_two,val_up_two,2,width,"left");
+                    dw2 = 2;
+                }
+                else{
+                    dw2 = 0;
+                }
+                break;
+
+            case 39:
+                if (!maze.isValid(canvas,step,"right",val_right_two,val_up_two)){
+                    maze.destroyWall(canvas,step,val_right_two,val_up_two,2,width,"right");
+                    dw2 = 2;
+                }
+                else{
+                    dw2 = 0;
+                }   
+                break;     
+        }
+        
+        
+    }
+}
+
+};
+
     
 window.onload = function () {
     
@@ -221,145 +417,6 @@ window.onload = function () {
     });
 
 
-function moveBlocks(val, player){
-if (player % 2 == 0){
-    if (!(dw1 == 1)){
-
-        switch(val){
-
-            case 38:            
-                if (maze.isValid(canvas,step,"up",val_right_one,val_up_one)){
-                    maze.removeCircle(canvas,step,val_right_one,val_up_one);
-                    val_up_one -=1;
-                    audio.play();        
-                }
-                break;
-
-            case 40:           
-                if (maze.isValid(canvas,step,"down",val_right_one,val_up_one)){
-                    maze.removeCircle(canvas,step,val_right_one,val_up_one);
-                    val_up_one +=1;
-                    audio.play();
-                }
-                break;
-
-            case 37:    
-                if (maze.isValid(canvas,step,"left",val_right_one,val_up_one)){
-                    maze.removeCircle(canvas,step,val_right_one,val_up_one);
-                    val_right_one -=1;
-                    audio.play();
-                }
-                break;
-
-            case 39:
-                if (maze.isValid(canvas,step,"right",val_right_one,val_up_one)){
-                    maze.removeCircle(canvas,step,val_right_one,val_up_one);
-                    val_right_one +=1;
-                    audio.play();
-                }
-                break;
-            case 66:
-                dw1++;
-                break;    
-        }
-
-        maze.drawCircle(canvas, step,val_right_one,val_up_one,1,width);
-        maze.drawCircle(canvas, step,val_right_two,val_up_two,2,width);
-        
-    }
-
-
-    else{     
-
-        switch(val){
-
-            case 38:
-                maze.destroyWall(canvas,step,val_right_one,val_up_one,1,width,"up");
-                break;
-
-            case 40:
-                maze.destroyWall(canvas,step,val_right_one,val_up_one,1,width,"down");
-                break;
-
-            case 37:
-                maze.destroyWall(canvas,step,val_right_one,val_up_one,1,width,"left");
-                break;
-
-            case 39:
-                maze.destroyWall(canvas,step,val_right_one,val_up_one,1,width,"right");
-                break;                
-        }
-
-        dw1 = 2;
-    }
-}
-else {
-
-    if (!(dw2==1)){
-
-        switch(val){
-
-            case 38:
-                if (maze.isValid(canvas,step,"up",val_right_two,val_up_two)){
-                    maze.removeCircle(canvas,step,val_right_two,val_up_two);
-                    val_up_two -=1;
-                }    
-                break;
-
-            case 40:
-                if (maze.isValid(canvas,step,"down",val_right_two,val_up_two)){
-                    maze.removeCircle(canvas,step,val_right_two,val_up_two);
-                    val_up_two +=1;
-                }
-                break;
-
-            case 37:
-                if (maze.isValid(canvas,step,"left",val_right_two,val_up_two)){
-                    maze.removeCircle(canvas,step,val_right_two,val_up_two);
-                    val_right_two -=1;
-                }
-                break;
-
-            case 39:
-                if (maze.isValid(canvas,step,"right",val_right_two,val_up_two)){
-                    maze.removeCircle(canvas,step,val_right_two,val_up_two);
-                    val_right_two +=1;
-                }  
-                break;
-            case 66:
-                dw2++;
-                break;      
-        }
-
-        maze.drawCircle(canvas, step,val_right_two,val_up_two,2,width);
-        maze.drawCircle(canvas, step,val_right_one,val_up_one,1,width);
-    }
-        
-    else {
-
-        switch(val){
-            case 38:
-                maze.destroyWall(canvas,step,val_right_two,val_up_two,2,width,"up");
-                break;
-
-            case 40:
-                maze.destroyWall(canvas,step,val_right_two,val_up_two,2,width,"down");
-                break;
-
-            case 37:
-                maze.destroyWall(canvas,step,val_right_two,val_up_two,2,width,"left");
-                break;
-
-            case 39:
-                maze.destroyWall(canvas,step,val_right_two,val_up_two,2,width,"right");
-                break;        
-        }
-        
-        dw2 = 2;
-    }
-}
-
-};
 
    
     
