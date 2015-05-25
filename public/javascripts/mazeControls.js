@@ -7,6 +7,8 @@ var seconds = 0;
 var minutes = 0;
 var connectionEstablished=0;
 
+
+
 function getCode(){
     if (document.getElementById('getCodeButton').disabled) return;
 
@@ -21,8 +23,11 @@ function getCode(){
         drawMaze(2);
         var elem = document.getElementById('getCodeButton');
         elem.disabled = true;
-        elem.style.backgroundColor = "#AAA";
+        elem.style.background = "#AAA";
         connectionEstablished = 1;
+        var elem2 = document.getElementById('changeDifficultyButton');
+        elem2.disabled = false;
+        elem2.style.removeProperty('background');
     });   
 };
 
@@ -161,6 +166,7 @@ function changeTime(){
 };
 
 function changeDifficulty(flag) {
+    if (document.getElementById('changeDifficultyButton').disabled) return;
     difficulty = (difficulty +1)%3;
     if (difficulty == 0){
         width = 20;
@@ -381,7 +387,14 @@ window.onload = function () {
     canvas.setAttribute("width", "801");
     canvas.setAttribute("height", "801");
 
-    
+    seconds = 0;
+    minutes = 0;
+    connectionEstablished=0;
+    var elem2 = document.getElementById('changeDifficultyButton');
+        elem2.disabled = true;
+        elem2.style.background = "#AAA";
+
+
     var mazeholder = document.getElementById("mazeHolder");
     
     if (mazeholder.insertAdjacentElement) {       
@@ -416,8 +429,11 @@ window.onload = function () {
         canvas.style.display="block";
         var elem = document.getElementById('getCodeButton');
         elem.disabled = true;
-        elem.style.backgroundColor = "#AAA";
+        elem.style.background = "#AAA";
         connectionEstablished = 1;
+        var elem2 = document.getElementById('changeDifficultyButton');
+        elem2.disabled = false;
+        elem2.style.removeProperty('background');
 
     });
 
