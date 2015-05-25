@@ -5,6 +5,7 @@ var socketID;
 var socket;
 var seconds = 0;
 var minutes = 0;
+var connectionEstablished=0;
 
 function getCode(){
     if (document.getElementById('getCodeButton').disabled) return;
@@ -21,6 +22,7 @@ function getCode(){
         var elem = document.getElementById('getCodeButton');
         elem.disabled = true;
         elem.style.backgroundColor = "#AAA";
+        connectionEstablished = 1;
     });   
 };
 
@@ -95,7 +97,14 @@ function drawMaze(diff_flag){
         }
 
         else{
-            socket.emit('current matrix', {'matrix' : clobject, 'senderID' : clientID, 'diff_flag' : diff_flag});
+            if (connectionEstablished){
+                socket.emit('current matrix', {'matrix' : clobject, 'senderID' : clientID, 'diff_flag' : diff_flag});
+            }
+            else{
+                socket.emit('current matrix', {'matrix' : clobject, 'senderID' : clientID, 'diff_flag' : diff_flag});
+                prompt("Send this code to your friend. Maze will appear after your friend connects.", socketID);
+            }
+
         }
     }    
 };
@@ -408,6 +417,7 @@ window.onload = function () {
         var elem = document.getElementById('getCodeButton');
         elem.disabled = true;
         elem.style.backgroundColor = "#AAA";
+        connectionEstablished = 1;
 
     });
 
