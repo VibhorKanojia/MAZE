@@ -7,6 +7,8 @@ var seconds = 0;
 var minutes = 0;
 
 function getCode(){
+    if (document.getElementById('getCodeButton').disabled) return;
+
     var connID = prompt("Please enter the code", "");
     
     socket.emit('Connect Code', {'connTo' : connID, 'myID' : socketID});
@@ -16,6 +18,9 @@ function getCode(){
         socket.emit('Show Canvas', clientID);
         changeTime();
         drawMaze(2);
+        var elem = document.getElementById('getCodeButton');
+        elem.disabled = true;
+        elem.style.backgroundColor = "#AAA";
     });   
 };
 
@@ -400,6 +405,10 @@ window.onload = function () {
     socket.on('Show Canvas', function(){
         changeTime();
         canvas.style.display="block";
+        var elem = document.getElementById('getCodeButton');
+        elem.disabled = true;
+        elem.style.backgroundColor = "#AAA";
+
     });
 
     socket.on('Change Matrix', function(data){
