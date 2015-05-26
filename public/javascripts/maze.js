@@ -326,7 +326,7 @@ function Maze(width, height) {
             }
         };
                 
-        this.destroyWall = function (canvas, step, val_right,val_up, player, width, direction){
+        this.destroyWall = function (canvas, step, val_right, val_up, width, direction){
             if (typeof canvas == "string") {
              canvas = document.getElementById(canvas);
             }

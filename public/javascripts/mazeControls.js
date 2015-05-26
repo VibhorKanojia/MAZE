@@ -6,6 +6,8 @@ var socket;
 var seconds = 0;
 var minutes = 0;
 var connectionEstablished=0;
+var pauseKeyEvents = 0;
+var controlFlip = 0;
 
 
 
@@ -43,8 +45,7 @@ var canvas_height = 601;
 var width = 30;
 var height = 30;
 
-var dw1 = 0;                //destroy wall player 1
-var dw2 = 0;                //destroy wall player 2
+var destroy_wall = 0;                //destroy wall player 1
 
 var maze;
 var val_right_one = 0;
@@ -60,13 +61,14 @@ var canvas = document.createElement("canvas"),
 function drawMaze(diff_flag){
     seconds = 0;
     minutes = 0;
-    dw1 = 0;                //destroy wall player 1
-    dw2 = 0;                //destroy wall player 2
+    destroy_wall = 0;                //destroy wall player 1
 
     val_right_one = 0;                                                  //FUCKING COMPLICATED STUFF 'was' AHEAD. I fucking simplified it :P
     val_up_one = 0;
     val_right_two = 0;
     val_up_two = 0;
+    pauseKeyEvents = 0;
+    controlFlip = 0;
     
     document.getElementById('viewSolution').disabled=false;
     document.getElementById('breakWall').disabled = false;
@@ -117,36 +119,23 @@ function drawMaze(diff_flag){
     }    
 };
 
-/*
+
 function flipControls() {
-    
     socket.emit('Flip Controls', clientID);
-    fr_controlFlip = -1;
-    setTimeout(
-            function(){
-                my_controlFlip = 1;
-            }, 5000);
+    document.getElementById('flipControls').disabled = true;
+
 };
-*/
+
 
 function solveMaze() {
     maze.drawSolution(canvas);
-    var stopFlag = 0;
-    var solutionInterval = setInterval(function(){
-        if (stopFlag == 1) {
-            maze.drawSolution(canvas,'#FFFFFF');
-            maze.drawCircle(canvas, step,val_right_two,val_up_two,2,width);
-            maze.drawCircle(canvas, step,val_right_one,val_up_one,1,width);
-            clearInterval(solutionInterval);
-        }
-        else{
-            maze.drawSolution(canvas);
-            stopFlag = 1;
-        }
-
-    }, (difficulty+1)*500);
-
-    document.getElementById('viewSolution').disabled=true;
+    setTimeout(
+            function(){
+                maze.drawSolution(canvas,'#FFFFFF');
+                maze.drawCircle(canvas, step,val_right_two,val_up_two,2,width);
+                maze.drawCircle(canvas, step,val_right_one,val_up_one,1,width);
+                document.getElementById('viewSolution').disabled=true;                
+            }, (difficulty+1)*500);
 };
 
 function changeTime(){
@@ -201,9 +190,12 @@ function changeDifficulty(flag) {
     
 };
 
-function moveBlocks(val, player){
-if (player % 2 == 0){
-    if (!(dw1 == 1)){
+
+
+
+function moveBlocks(val){
+
+    if (!(destroy_wall == 1)){
 
         switch(val){
 
@@ -211,7 +203,8 @@ if (player % 2 == 0){
                 if (maze.isValid(canvas,step,"up",val_right_one,val_up_one)){
                     maze.removeCircle(canvas,step,val_right_one,val_up_one);
                     val_up_one -=1;
-                    audio.play();        
+                    audio.play();
+                    socket.emit('Notify Opponent', {'val_right' : val_right_one, 'val_up' : val_up_one, 'clientID' : clientID});        
                 }
                 break;
 
@@ -220,6 +213,7 @@ if (player % 2 == 0){
                     maze.removeCircle(canvas,step,val_right_one,val_up_one);
                     val_up_one +=1;
                     audio.play();
+                    socket.emit('Notify Opponent', {'val_right' : val_right_one, 'val_up' : val_up_one, 'clientID' : clientID});        
                 }
                 break;
 
@@ -228,6 +222,7 @@ if (player % 2 == 0){
                     maze.removeCircle(canvas,step,val_right_one,val_up_one);
                     val_right_one -=1;
                     audio.play();
+                    socket.emit('Notify Opponent', {'val_right' : val_right_one, 'val_up' : val_up_one, 'clientID' : clientID});        
                 }
                 break;
 
@@ -236,16 +231,16 @@ if (player % 2 == 0){
                     maze.removeCircle(canvas,step,val_right_one,val_up_one);
                     val_right_one +=1;
                     audio.play();
+                    socket.emit('Notify Opponent', {'val_right' : val_right_one, 'val_up' : val_up_one, 'clientID' : clientID});        
                 }
                 break;
             case 66:
-                dw1++;
+                destroy_wall++;
                 break;    
         }
 
-        maze.drawCircle(canvas, step,val_right_one,val_up_one,1,width);
         maze.drawCircle(canvas, step,val_right_two,val_up_two,2,width);
-        
+        maze.drawCircle(canvas, step,val_right_one,val_up_one,1,width);
     }
 
 
@@ -255,141 +250,56 @@ if (player % 2 == 0){
 
             case 38:
                 if (!maze.isValid(canvas,step,"up",val_right_one,val_up_one)){
-                    maze.destroyWall(canvas,step,val_right_one,val_up_one,1,width,"up");
+                    maze.destroyWall(canvas,step,val_right_one,val_up_one, width,"up");
                     document.getElementById('breakWall').disabled = true;
-                    dw1 = 2;
+                    socket.emit('Notify Opponent Break', {'direction' : "up", 'clientID' : clientID});        
+
+                    destroy_wall = 2;
                 }
                 else{
-                    dw1 = 0;
+                    destroy_wall = 0;
                 }
 
                 break;
 
             case 40:
                 if (!maze.isValid(canvas,step,"down",val_right_one,val_up_one)){
-                    maze.destroyWall(canvas,step,val_right_one,val_up_one,1,width,"down");
+                    maze.destroyWall(canvas,step,val_right_one,val_up_one, width,"down");
                     document.getElementById('breakWall').disabled = true;
-                    dw1 = 2;
+                    socket.emit('Notify Opponent Break', {'direction' : "down", 'clientID' : clientID});        
+                    destroy_wall = 2;
                 }
                 else{
-                    dw1 = 0;
+                    destroy_wall = 0;
                 }
                 break;
 
             case 37:
                 if (!maze.isValid(canvas,step,"left",val_right_one,val_up_one)){
-                    maze.destroyWall(canvas,step,val_right_one,val_up_one,1,width,"left");
+                    maze.destroyWall(canvas,step,val_right_one,val_up_one, width,"left");
                     document.getElementById('breakWall').disabled = true;
-                    dw1= 2;
+                    socket.emit('Notify Opponent Break', {'direction' : "left", 'clientID' : clientID});        
+                    destroy_wall= 2;
                 }
                 else{
-                    dw1 = 0;
+                    destroy_wall = 0;
                 }
                 break;
 
             case 39:
                 if (!maze.isValid(canvas,step,"right",val_right_one,val_up_one)){
-                    maze.destroyWall(canvas,step,val_right_one,val_up_one,1,width,"right");
+                    maze.destroyWall(canvas,step,val_right_one,val_up_one, width,"right");
                     document.getElementById('breakWall').disabled = true;
-                    dw1 = 2;
+                    socket.emit('Notify Opponent Break', {'direction' : "right" , 'clientID' : clientID});        
+                    destroy_wall = 2;
                 } 
                 else{
-                    dw1 = 0;
+                    destroy_wall = 0;
                 }
                 break;               
         }
 
     }
-}
-else {
-
-    if (!(dw2==1)){
-
-        switch(val){
-
-            case 38:
-                if (maze.isValid(canvas,step,"up",val_right_two,val_up_two)){
-                    maze.removeCircle(canvas,step,val_right_two,val_up_two);
-                    val_up_two -=1;
-                }    
-                break;
-
-            case 40:
-                if (maze.isValid(canvas,step,"down",val_right_two,val_up_two)){
-                    maze.removeCircle(canvas,step,val_right_two,val_up_two);
-                    val_up_two +=1;
-                }
-                break;
-
-            case 37:
-                if (maze.isValid(canvas,step,"left",val_right_two,val_up_two)){
-                    maze.removeCircle(canvas,step,val_right_two,val_up_two);
-                    val_right_two -=1;
-                }
-                break;
-
-            case 39:
-                if (maze.isValid(canvas,step,"right",val_right_two,val_up_two)){
-                    maze.removeCircle(canvas,step,val_right_two,val_up_two);
-                    val_right_two +=1;
-                }  
-                break;
-            case 66:
-                dw2++;
-                break;      
-        }
-
-        maze.drawCircle(canvas, step,val_right_two,val_up_two,2,width);
-        maze.drawCircle(canvas, step,val_right_one,val_up_one,1,width);
-    }
-        
-    else {
-
-        switch(val){
-            case 38:
-                if (!maze.isValid(canvas,step,"up",val_right_two,val_up_two)){
-                    maze.destroyWall(canvas,step,val_right_two,val_up_two,2,width,"up");
-                    dw2 = 2;            
-                }
-                else{
-                    dw2 = 0;
-                }
-                break;
-
-            case 40:
-                if (!maze.isValid(canvas,step,"down",val_right_two,val_up_two)){
-                    maze.destroyWall(canvas,step,val_right_two,val_up_two,2,width,"down");
-                    dw2 = 2;
-                }
-                else{
-                    dw2 = 0;
-                }
-                break;
-
-            case 37:
-                if (!maze.isValid(canvas,step,"left",val_right_two,val_up_two)){
-                    maze.destroyWall(canvas,step,val_right_two,val_up_two,2,width,"left");
-                    dw2 = 2;
-                }
-                else{
-                    dw2 = 0;
-                }
-                break;
-
-            case 39:
-                if (!maze.isValid(canvas,step,"right",val_right_two,val_up_two)){
-                    maze.destroyWall(canvas,step,val_right_two,val_up_two,2,width,"right");
-                    dw2 = 2;
-                }
-                else{
-                    dw2 = 0;
-                }   
-                break;     
-        }
-        
-        
-    }
-}
 
 };
 
@@ -450,15 +360,28 @@ window.onload = function () {
 
     });
 
-    /*
+    
     socket.on ('Flip Controls',function(){
-        my_controlFlip = -1;
+        pauseKeyEvents = 1;
         setTimeout(
             function(){
-                my_controlFlip = 1;
-            }, 5000);
+                controlFlip = 1;
+                pauseKeyEvents = 0;
+            }, 500);
+
+        setTimeout(
+            function(){
+                pauseKeyEvents = 1;
+            }, 10500);
+
+        setTimeout(
+            function(){
+                controlFlip = 0;
+                pauseKeyEvents = 0;
+            }, 11000);        
+
     });
-    */
+    
 
     socket.on('Change Matrix', function(data){
         if (data == 3){         // 3 => refresh button is pressed by opponent
@@ -469,22 +392,37 @@ window.onload = function () {
         }
     });
 
+    socket.on ('Move Opponent', function(data){
+        maze.removeCircle(canvas,step,val_right_two,val_up_two);
+        maze.drawCircle(canvas, step,val_right_one,val_up_one,1,width);
+        maze.drawCircle(canvas, step,data.val_right,data.val_up,2,width); 
+        val_right_two = data.val_right;
+        val_up_two = data.val_up;    
+    });
 
-    socket.on ('move blocks', function(msg){
-        moveBlocks(msg.val, msg.player);
+
+    socket.on ('Break Wall', function(direction){
+        maze.destroyWall(canvas, step, val_right_two,val_up_two, width, direction);    
     });
 
 
 
-   
     
     document.onkeydown = checkKey;
 
-    function checkKey(e) {  
+    function checkKey(e) { 
         e = e || window.event;
         e.preventDefault();
-        moveBlocks(e.keyCode, 2);           //even (e.g 2) => move myself ; odd => move other player
-        socket.emit('key code to server', {'keycode' : e.keyCode, 'clientID' : clientID});
+        if (pauseKeyEvents) return;
+        if (controlFlip){
+            if (e.keyCode == 37) moveBlocks(39);
+            else if (e.keyCode == 39) moveBlocks(37);
+            else if (e.keyCode == 38) moveBlocks(40);
+            else if (e.keyCode == 40) moveBlocks(38);
+        }
+        else{
+            moveBlocks(e.keyCode);
+        }           
     };
 };
 

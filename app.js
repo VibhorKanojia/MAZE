@@ -90,13 +90,24 @@ io.on('connection', function(socket){
   });
 
 
-  socket.on('key code to server', function(msg){
+  socket.on('Notify Opponent', function(msg){
     var senderID = msg.clientID;
     if (senderID % 2 == 0){
-      io.to(clients[senderID+1]).emit('move blocks', {'val':msg.keycode, 'player':senderID+1});
+      io.to(clients[senderID+1]).emit('Move Opponent', {'val_right':msg.val_right, 'val_up':msg.val_up});
     }
     else {
-      io.to(clients[senderID-1]).emit('move blocks', {'val': msg.keycode, 'player':senderID});
+      io.to(clients[senderID-1]).emit('Move Opponent', {'val_right': msg.val_right, 'val_up':msg.val_up});
+    }
+  });
+
+
+  socket.on('Notify Opponent Break', function(msg){
+    var senderID = msg.clientID;
+    if (senderID % 2 == 0){
+      io.to(clients[senderID+1]).emit('Break Wall', msg.direction);
+    }
+    else {
+      io.to(clients[senderID-1]).emit('Break Wall', msg.direction);
     }
   });
 
