@@ -39,7 +39,7 @@ io.on('connection', function(socket){
   socket.on('Connect Code', function(code){
     var index;
     for (index = 2 ; index < LastClientID ; index++){
-      if (clients[index] == code.connTo){
+      if (clients[index] == code.connTo && !clients[index+1]){
         clients[index+1] = code.myID;
         console.log(index + " matched");
         break;
@@ -51,6 +51,19 @@ io.on('connection', function(socket){
   socket.on('Show Canvas', function(senderID){
       io.to(clients[senderID-1]).emit('Show Canvas');
   });
+
+
+  socket.on('Flip Controls', function(senderID){
+    if (senderID % 2 == 0){
+      io.to(clients[senderID+1]).emit('Flip Controls');
+    }
+    else {
+      io.to(clients[senderID-1]).emit('Flip Controls');
+    }
+  });
+
+
+
 
   socket.on('current matrix', function(data){
     if (data.senderID %2 == 0){

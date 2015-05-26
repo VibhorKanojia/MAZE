@@ -28,6 +28,7 @@ function getCode(){
         var elem2 = document.getElementById('changeDifficultyButton');
         elem2.disabled = false;
         elem2.style.removeProperty('background');
+        $('#logo').remove();
     });   
 };
 
@@ -66,9 +67,11 @@ function drawMaze(diff_flag){
     val_up_one = 0;
     val_right_two = 0;
     val_up_two = 0;
-
+    
     document.getElementById('viewSolution').disabled=false;
     document.getElementById('breakWall').disabled = false;
+    document.getElementById('flipControls').disabled = false;
+
 
 
     context.fillStyle = "#FFFFFF";
@@ -114,8 +117,17 @@ function drawMaze(diff_flag){
     }    
 };
 
-
-
+/*
+function flipControls() {
+    
+    socket.emit('Flip Controls', clientID);
+    fr_controlFlip = -1;
+    setTimeout(
+            function(){
+                my_controlFlip = 1;
+            }, 5000);
+};
+*/
 
 function solveMaze() {
     maze.drawSolution(canvas);
@@ -434,8 +446,19 @@ window.onload = function () {
         var elem2 = document.getElementById('changeDifficultyButton');
         elem2.disabled = false;
         elem2.style.removeProperty('background');
+        $('#logo').remove();
 
     });
+
+    /*
+    socket.on ('Flip Controls',function(){
+        my_controlFlip = -1;
+        setTimeout(
+            function(){
+                my_controlFlip = 1;
+            }, 5000);
+    });
+    */
 
     socket.on('Change Matrix', function(data){
         if (data == 3){         // 3 => refresh button is pressed by opponent
