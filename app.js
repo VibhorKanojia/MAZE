@@ -7,7 +7,7 @@ var io = require('socket.io').listen(http);
 
 
 var clients = [];
-
+var totalMazeGenerated = 119;
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use("/styles",  express.static(__dirname + '/public/stylesheets'));
@@ -26,7 +26,7 @@ var cellList = [];
 
 var LastClientID = 2;
 io.on('connection', function(socket){
-  
+
   var client_ip_address = socket.request.connection.remoteAddress;
   console.log(client_ip_address + " connected");
 
@@ -48,7 +48,7 @@ io.on('connection', function(socket){
       }
   });
 
-  io.to(socket.id).emit('SocketID message', socket.id);
+  io.to(socket.id).emit('SocketID message', {'sid': socket.id, 'mazes' : totalMazeGenerated});
   
   socket.on('Get ClientID', function(socketid){
     clients[LastClientID] = socketid;
@@ -103,6 +103,9 @@ io.on('connection', function(socket){
 
 
   socket.on('Request Maze', function(data){
+    totalMazeGenerated++;
+    console.log("Maze Count " + totalMazeGenerated);
+    io.sockets.emit('Maze Count', totalMazeGenerated);
     if (data % 2 == 0){
       io.to(clients[data]).emit('Use matrix', cellList[data+1]);
     }

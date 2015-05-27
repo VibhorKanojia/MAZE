@@ -8,7 +8,7 @@ var minutes = 0;
 var connectionEstablished=0;
 var pauseKeyEvents = 0;
 var controlFlip = 0;
-
+var mazeCount = 0;
 
 
 function getCode(){
@@ -323,10 +323,12 @@ window.onload = function () {
     document.getElementById('viewSolution').disabled=true;
     document.getElementById('breakWall').disabled = true;
     document.getElementById('flipControls').disabled = true;
+   
 
     seconds = 0;
     minutes = 0;
     connectionEstablished=0;
+
     var elem2 = document.getElementById('changeDifficultyButton');
         elem2.disabled = true;
         elem2.style.background = "#AAA";
@@ -358,7 +360,9 @@ window.onload = function () {
     socket = io();
 
     socket.on('SocketID message', function(data){
-        socketID = data;
+        socketID = data.sid;
+        mazeCount = data.mazes;
+        document.getElementById('mazeCount').innerHTML = "Maze Count : " + mazeCount;
     });
 
     socket.on('Show Canvas', function(){
@@ -426,6 +430,11 @@ window.onload = function () {
 
     socket.on ('Break Wall', function(direction){
         maze.destroyWall(canvas, step, val_right_two,val_up_two, width, direction);    
+    });
+
+    socket.on('Maze Count', function(count){
+        mazeCount = count;
+        document.getElementById('mazeCount').innerHTML = "Maze Count : " + mazeCount;
     });
 
 
