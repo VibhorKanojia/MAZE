@@ -70,10 +70,7 @@ function drawMaze(diff_flag){
     pauseKeyEvents = 0;
     controlFlip = 0;
     
-    document.getElementById('viewSolution').disabled=false;
-    document.getElementById('breakWall').disabled = false;
-    document.getElementById('flipControls').disabled = false;
-
+    canvas.style.display="none";
 
 
     context.fillStyle = "#FFFFFF";
@@ -82,12 +79,20 @@ function drawMaze(diff_flag){
 
     clobject.cells = maze.draw(canvas, step);
     if (diff_flag == 1){ //DIFF FLAG = 1 => difficulty changed by you
+        document.getElementById('viewSolution').disabled=false;
+        document.getElementById('breakWall').disabled = false;
+        document.getElementById('flipControls').disabled = false;
+    
+        canvas.style.display = "block";
         socket.emit('current matrix', {'matrix' : clobject, 'senderID' : clientID, 'diff_flag' : diff_flag});    
     }
 
     else if (diff_flag == 2){   // DIFF_FLAG = 2 => when you request a matrix, happens when opponent changes level or presses refresh button
         socket.emit('Request Maze', clientID);
-        
+        document.getElementById('viewSolution').disabled=false;
+        document.getElementById('breakWall').disabled = false;
+        document.getElementById('flipControls').disabled = false;
+    
         socket.on('Use matrix', function (data){
             maze.draw(canvas,step,data);
             canvas.style.display="block";
@@ -100,7 +105,6 @@ function drawMaze(diff_flag){
               
             socket.on('Set ClientID', function(id){
                 clientID = id;
-                canvas.style.display = "none";
                 prompt("Send this code to your friend. Maze will appear after your friend connects.", socketID);
                 socket.emit('current matrix', {'matrix' : clobject, 'senderID' : clientID, 'diff_flag' : diff_flag});
             });
@@ -108,6 +112,11 @@ function drawMaze(diff_flag){
 
         else{
             if (connectionEstablished){
+                document.getElementById('viewSolution').disabled=false;
+                document.getElementById('breakWall').disabled = false;
+                document.getElementById('flipControls').disabled = false;
+    
+                canvas.style.display="block";
                 socket.emit('current matrix', {'matrix' : clobject, 'senderID' : clientID, 'diff_flag' : diff_flag});
             }
             else{
@@ -140,7 +149,9 @@ function solveMaze() {
 
 function changeTime(){
     var intervalID = setInterval(function() {
-        if (endFlag == 1) return;
+        if (endFlag == 1) {
+            return;
+        }
         seconds++;
         if (seconds == 60){
             seconds =0;
@@ -351,6 +362,9 @@ window.onload = function () {
     });
 
     socket.on('Show Canvas', function(){
+        document.getElementById('viewSolution').disabled=false;
+        document.getElementById('breakWall').disabled = false;
+        document.getElementById('flipControls').disabled = false;
         changeTime();
         canvas.style.display="block";
         var elem = document.getElementById('getCodeButton');
@@ -402,6 +416,11 @@ window.onload = function () {
         maze.drawCircle(canvas, step,data.val_right,data.val_up,2,width); 
         val_right_two = data.val_right;
         val_up_two = data.val_up;    
+    });
+
+    socket.on('Opponent Disconnected', function(){
+        alert('Your opponent has disconnected');
+        location.reload();
     });
 
 

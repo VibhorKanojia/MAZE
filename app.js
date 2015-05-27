@@ -8,7 +8,6 @@ var io = require('socket.io').listen(http);
 
 var clients = [];
 
-
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use("/styles",  express.static(__dirname + '/public/stylesheets'));
@@ -27,6 +26,28 @@ var cellList = [];
 
 var LastClientID = 2;
 io.on('connection', function(socket){
+  
+  var client_ip_address = socket.request.connection.remoteAddress;
+  console.log(client_ip_address + " connected");
+
+  socket.on('disconnect', function() {
+      var i = clients.indexOf(socket.id);
+      if (i != -1){
+        delete clients[i];
+        console.log("deleting " + i);
+        if (i%2 == 0){
+         io.to(clients[i+1]).emit('Opponent Disconnected');
+         delete clients[i+1];
+         console.log("deleting " + (i+1));
+        }
+        else{
+         io.to(clients[i-1]).emit('Opponent Disconnected');
+         delete clients[i-1];
+         console.log("deleting " + (i-1));
+        }
+      }
+  });
+
   io.to(socket.id).emit('SocketID message', socket.id);
   
   socket.on('Get ClientID', function(socketid){
@@ -34,6 +55,7 @@ io.on('connection', function(socket){
     io.to(socketid).emit('Set ClientID', LastClientID);
     console.log("Sent " + LastClientID);
     LastClientID += 2;
+    if (LastClientID > 2000) LastClientID =2;
   });
 
   socket.on('Connect Code', function(code){
