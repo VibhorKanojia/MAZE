@@ -27,7 +27,7 @@ var cellList = [];
 var LastClientID = 2;
 io.on('connection', function(socket){
 
-  var client_ip_address = socket.request.connection.remoteAddress;
+ var client_ip_address = socket.request.connection._peername.address;
   console.log(client_ip_address + " connected");
 
   socket.on('disconnect', function() {
@@ -91,11 +91,13 @@ io.on('connection', function(socket){
     if (data.senderID %2 == 0){
       cellList[data.senderID] = {'cells' : data.matrix.cells.slice()};
       cellList[data.senderID +1] = {'cells' : data.matrix.cells.slice()};
+      if (data.conn) io.to(clients[data.senderID]).emit('Change Matrix', 3); 
       io.to(clients[data.senderID+1]).emit('Change Matrix', data.diff_flag); 
     }
     else{
       cellList[data.senderID] = {'cells' : data.matrix.cells.slice()};
-      cellList[data.senderID - 1] = {'cells' : data.matrix.cells.slice()}; 
+      cellList[data.senderID - 1] = {'cells' : data.matrix.cells.slice()};
+      if (data.conn) io.to(clients[data.senderID]).emit('Change Matrix', 3);  
       io.to(clients[data.senderID-1]).emit('Change Matrix', data.diff_flag);
     }
     

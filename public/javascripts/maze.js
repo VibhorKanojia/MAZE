@@ -339,31 +339,39 @@ function Maze(width, height) {
             }
             var cell = cells[val_right][val_up];
             if (direction == "up"){
-                cell.walls.n = false;
-                cells[val_right][val_up-1].walls.s = false;
-                context.fillStyle = 'white';
-                context.fillRect(cell.x*step, cell.y*step, step, 5);
+                if (cells[val_right][val_up-1]){
+                    cell.walls.n = false;
+                    cells[val_right][val_up-1].walls.s = false;
+                    context.fillStyle = 'white';
+                    context.fillRect(cell.x*step, cell.y*step, step, 5);
+                }
 
             }
             else if (direction == "down"){
-                cell.walls.s = false;
-                context.fillStyle = 'white';
-                cells[val_right][val_up+1].walls.n = false;
-                context.fillRect(cell.x*step, cell.y*step + step, step, 5);
+                if (cells[val_right][val_up+1]){
+                    cell.walls.s = false;
+                    context.fillStyle = 'white';
+                    cells[val_right][val_up+1].walls.n = false;
+                    context.fillRect(cell.x*step, cell.y*step + step, step, 5);
+                }
 
             }
             else if (direction == "left"){
-                cell.walls.w = false;
-                context.fillStyle = 'white';
-                cells[val_right-1][val_up].walls.e = false;
-                context.fillRect(cell.x*step, cell.y*step, 5, step);
+                if (cells[val_right-1][val_up]){
+                    cell.walls.w = false;
+                    context.fillStyle = 'white';
+                    cells[val_right-1][val_up].walls.e = false;
+                    context.fillRect(cell.x*step, cell.y*step, 5, step);
+                }
 
             }
             else if (direction == "right"){
-                cell.walls.e = false;
-                context.fillStyle = 'white';
-                cells[val_right+1][val_up].walls.w = false;
-                context.fillRect(cell.x*step+step, cell.y*step, 5, step);
+                if (cells[val_right+1][val_up]){
+                    cell.walls.e = false;
+                    context.fillStyle = 'white';
+                    cells[val_right+1][val_up].walls.w = false;
+                    context.fillRect(cell.x*step+step, cell.y*step, 5, step);
+                }
 
             }
         }

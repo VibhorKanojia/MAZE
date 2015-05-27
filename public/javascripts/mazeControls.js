@@ -79,12 +79,10 @@ function drawMaze(diff_flag){
 
     clobject.cells = maze.draw(canvas, step);
     if (diff_flag == 1){ //DIFF FLAG = 1 => difficulty changed by you
+        socket.emit('current matrix', {'matrix' : clobject, 'senderID' : clientID, 'diff_flag' : diff_flag, 'conn' : connectionEstablished});    
         document.getElementById('viewSolution').disabled=false;
         document.getElementById('breakWall').disabled = false;
         document.getElementById('flipControls').disabled = false;
-    
-        canvas.style.display = "block";
-        socket.emit('current matrix', {'matrix' : clobject, 'senderID' : clientID, 'diff_flag' : diff_flag});    
     }
 
     else if (diff_flag == 2){   // DIFF_FLAG = 2 => when you request a matrix, happens when opponent changes level or presses refresh button
@@ -106,18 +104,16 @@ function drawMaze(diff_flag){
             socket.on('Set ClientID', function(id){
                 clientID = id;
                 prompt("Send this code to your friend. Maze will appear after your friend connects.", socketID);
-                socket.emit('current matrix', {'matrix' : clobject, 'senderID' : clientID, 'diff_flag' : diff_flag});
+                socket.emit('current matrix', {'matrix' : clobject, 'senderID' : clientID, 'diff_flag' : diff_flag, 'conn': connectionEstablished});
             });
         }
 
         else{
             if (connectionEstablished){
+                socket.emit('current matrix', {'matrix' : clobject, 'senderID' : clientID, 'diff_flag' : diff_flag, 'conn':connectionEstablished});
                 document.getElementById('viewSolution').disabled=false;
                 document.getElementById('breakWall').disabled = false;
                 document.getElementById('flipControls').disabled = false;
-    
-                canvas.style.display="block";
-                socket.emit('current matrix', {'matrix' : clobject, 'senderID' : clientID, 'diff_flag' : diff_flag});
             }
             else{
                 socket.emit('current matrix', {'matrix' : clobject, 'senderID' : clientID, 'diff_flag' : diff_flag});
@@ -260,7 +256,7 @@ function moveBlocks(val){
         switch(val){
 
             case 38:
-                if (!maze.isValid(canvas,step,"up",val_right_one,val_up_one)){
+                if (!maze.isValid(canvas,step,"up",val_right_one,val_up_one) && val_up_one != 0){
                     maze.destroyWall(canvas,step,val_right_one,val_up_one, width,"up");
                     document.getElementById('breakWall').disabled = true;
                     socket.emit('Notify Opponent Break', {'direction' : "up", 'clientID' : clientID});        
@@ -274,7 +270,7 @@ function moveBlocks(val){
                 break;
 
             case 40:
-                if (!maze.isValid(canvas,step,"down",val_right_one,val_up_one)){
+                if (!maze.isValid(canvas,step,"down",val_right_one,val_up_one) && val_up_one != (height -1)){
                     maze.destroyWall(canvas,step,val_right_one,val_up_one, width,"down");
                     document.getElementById('breakWall').disabled = true;
                     socket.emit('Notify Opponent Break', {'direction' : "down", 'clientID' : clientID});        
@@ -286,7 +282,7 @@ function moveBlocks(val){
                 break;
 
             case 37:
-                if (!maze.isValid(canvas,step,"left",val_right_one,val_up_one)){
+                if (!maze.isValid(canvas,step,"left",val_right_one,val_up_one) && val_right_one != 0){
                     maze.destroyWall(canvas,step,val_right_one,val_up_one, width,"left");
                     document.getElementById('breakWall').disabled = true;
                     socket.emit('Notify Opponent Break', {'direction' : "left", 'clientID' : clientID});        
@@ -298,7 +294,7 @@ function moveBlocks(val){
                 break;
 
             case 39:
-                if (!maze.isValid(canvas,step,"right",val_right_one,val_up_one)){
+                if (!maze.isValid(canvas,step,"right",val_right_one,val_up_one) && val_right_one != (width -1)) {
                     maze.destroyWall(canvas,step,val_right_one,val_up_one, width,"right");
                     document.getElementById('breakWall').disabled = true;
                     socket.emit('Notify Opponent Break', {'direction' : "right" , 'clientID' : clientID});        
