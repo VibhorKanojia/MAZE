@@ -314,6 +314,10 @@ function moveBlocks(val){
 
 };
 
+$(window).on('beforeunload', function(){
+    socket.close();
+});
+
     
 window.onload = function () {
     
