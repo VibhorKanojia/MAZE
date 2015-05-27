@@ -219,12 +219,12 @@ function Maze(width, height) {
             }
         }
 
-        // Fill in a start and end block:
-         context.fillStyle = '#006080';
+        // Fill up start block with 1st player's color:
+         context.fillStyle = '#20376D';
          context.fillRect(5, 5, step - 5, step - 5);
            
-        //context.fillRect(1, 1, step - 1, step - 1);
-        context.fillStyle = '#003243';
+        //Fill up exit
+        context.fillStyle = '#09C';
         context.fillRect((width - 1) * step + 5, (height - 1) * step + 5,
                          step , step );
 
@@ -304,10 +304,10 @@ function Maze(width, height) {
                 return;
             }
             if (player == 1){
-                context.fillStyle = '#006080';
+                context.fillStyle = '#20376D';
             }
             else if (player == 2){
-                context.fillStyle = 'blue';
+                context.fillStyle = '#7F98D4';
             }
             
             //this.roundRect(context, 5+val_right*step, 5+val_up*step, step - 5, step - 5,true,false);

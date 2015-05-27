@@ -309,6 +309,10 @@ window.onload = function () {
     canvas.setAttribute("width", "801");
     canvas.setAttribute("height", "801");
 
+    document.getElementById('viewSolution').disabled=true;
+    document.getElementById('breakWall').disabled = true;
+    document.getElementById('flipControls').disabled = true;
+
     seconds = 0;
     minutes = 0;
     connectionEstablished=0;
@@ -413,6 +417,14 @@ window.onload = function () {
     function checkKey(e) { 
         e = e || window.event;
         e.preventDefault();
+        if (e.keyCode == 70 && !document.getElementById('flipControls').disabled){
+            flipControls();
+            return;
+        }
+        if (e.keyCode == 86 && !document.getElementById('viewSolution').disabled){
+            solveMaze();
+            return;
+        }
         if (pauseKeyEvents) return;
         if (controlFlip){
             if (e.keyCode == 37) moveBlocks(39);
