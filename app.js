@@ -62,9 +62,11 @@ io.on('connection', function(socket){
     var index;
     for (index = 2 ; index < LastClientID ; index++){
       if (clients[index] == code.connTo && !clients[index+1]){
-        clients[index+1] = code.myID;
-        console.log(index + " matched");
-        break;
+        if (clients[index] != code.myID){
+          clients[index+1] = code.myID;
+          console.log(index + " matched");
+          break;
+        }
       }
     }
     io.to(clients[index+1]).emit('Set ID', index+1);

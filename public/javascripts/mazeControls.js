@@ -15,7 +15,7 @@ function getCode(){
     if (document.getElementById('getCodeButton').disabled) return;
 
     var connID = prompt("Please enter the code", "");
-    
+    if (connID == null) return;
     socket.emit('Connect Code', {'connTo' : connID, 'myID' : socketID});
     
     socket.on('Set ID', function(clID){
@@ -103,7 +103,7 @@ function drawMaze(diff_flag){
               
             socket.on('Set ClientID', function(id){
                 clientID = id;
-                prompt("Send this code to your friend. Maze will appear after your friend connects.", socketID);
+                alert("Send this code to your friend. Maze will appear after your friend connects.\n" + socketID);
                 socket.emit('current matrix', {'matrix' : clobject, 'senderID' : clientID, 'diff_flag' : diff_flag, 'conn': connectionEstablished});
             });
         }
@@ -117,7 +117,7 @@ function drawMaze(diff_flag){
             }
             else{
                 socket.emit('current matrix', {'matrix' : clobject, 'senderID' : clientID, 'diff_flag' : diff_flag});
-                prompt("Send this code to your friend. Maze will appear after your friend connects.", socketID);
+                alert("Send this code to your friend. Maze will appear after your friend connects.\n"+socketID);
             }
 
         }
